@@ -103,12 +103,14 @@ export async function deleteResume(id: string) {
 
 export async function optimizeResume(
   resumeTex: string,
-  jobDescription: string
+  jobDescription: string,
+  forceKeywords: boolean = false
 ): Promise<OptimizeResponse> {
   const formData = new FormData();
   const blob = new Blob([resumeTex], { type: 'text/plain' });
   formData.append('resume', blob, 'resume.tex');
   formData.append('job_description', jobDescription);
+  formData.append('force_keywords', forceKeywords.toString());
 
   const response = await fetch(`${API_URL}/optimize`, {
     method: 'POST',

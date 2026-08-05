@@ -77,23 +77,24 @@ Job Description:
 
 
 async def optimize_resume(
-    resume_tex: str, job_description: str, keywords: dict
+    resume_tex: str, job_description: str, keywords: dict, force_keywords: bool = False
 ) -> dict:
     """Optimize a LaTeX resume for a job description using extracted keywords."""
     prompt = f"""You are a professional resume optimizer. Optimize the given LaTeX resume for the provided job description.
 
 CRITICAL RULES — YOU MUST FOLLOW ALL OF THESE:
 1. NEVER fabricate experience, projects, companies, or certifications.
-2. NEVER invent technologies or skills the candidate doesn't clearly have.
-3. ONLY rewrite existing content — improve wording, naturally insert relevant keywords.
-4. You MAY reorder skills to prioritize relevant ones first.
-5. You MAY improve bullet points for clarity and ATS compatibility.
-6. You MAY add closely related skills ONLY if the candidate clearly has the foundation (e.g., if they know React, you can mention Next.js). List any such additions in "added_skills".
-7. PRESERVE ALL LaTeX formatting: \\documentclass, \\usepackage, \\begin{{document}}, \\end{{document}}, custom commands, macros, spacing, comments.
-8. ONLY EDIT these sections: Summary/Objective, Experience bullet points, Project descriptions, Skills ordering/grouping.
-9. NEVER modify: document class, packages, formatting commands, custom macros, layout commands.
-10. The output LaTeX MUST compile successfully with the same packages as the input.
-11. Keep all content truthful. Everything must be based on what exists in the original resume.
+2. INTEGRATE ALL SOFT SKILLS: You MUST naturally integrate all soft skills mentioned in the JD into the resume summary and bullet points. It must sound natural and not forced.
+3. TITLE OPTIMIZATION: If the JD title is slightly different but completely relevant to the candidate's background (e.g. "Software Developer" vs "Gen AI Engineer"), you MAY naturally adjust the candidate's professional headline/title in the resume to better match the JD and increase ATS scoring.
+4. HARD SKILLS RULE: { "You MUST force-add ALL missing hard skills from the JD (even if they seem slightly out of domain) by naturally weaving them into the resume summary or relevant bullet points without fabricating entirely new projects." if force_keywords else "You MAY add hard skills from the JD ONLY if they are from the same domain as the candidate's existing skills. If a hard skill is from a totally different domain, DO NOT add it." }
+5. ONLY rewrite existing content — improve wording, naturally insert relevant keywords.
+6. You MAY reorder skills to prioritize relevant ones first.
+7. You MAY improve bullet points for clarity and ATS compatibility.
+8. PRESERVE ALL LaTeX formatting: \\documentclass, \\usepackage, \\begin{{document}}, \\end{{document}}, custom commands, macros, spacing, comments.
+9. ONLY EDIT these sections: Summary/Objective, Experience bullet points, Project descriptions, Skills ordering/grouping.
+10. NEVER modify: document class, packages, formatting commands, custom macros, layout commands.
+11. The output LaTeX MUST compile successfully with the same packages as the input.
+12. Keep all content truthful. Everything must be based on what exists in the original resume.
 
 JOB DESCRIPTION:
 {job_description}
@@ -114,8 +115,8 @@ RESPOND WITH ONLY THIS JSON (no markdown fences):
 
 IMPORTANT:
 - "updated_tex" must contain the COMPLETE LaTeX document from \\documentclass to \\end{{document}}.
-- "ats_score" is your estimate of how well the optimized resume matches the JD (0-100).
-- "missing_keywords" are important JD keywords that couldn't be naturally incorporated without fabrication.
+- "ats_score" must be an INTEGER between 0-100 representing a strict, realistic calculation of how well the updated resume matches the JD based on keyword density.
+- "missing_keywords" are important JD keywords that couldn't be naturally incorporated without fabrication (e.g. hard skills from totally different domains).
 - "added_skills" lists ANY skills you mentioned that were NOT explicitly in the original resume. If none, use an empty array."""
 
     messages = [

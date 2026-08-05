@@ -13,6 +13,7 @@ export function Popup() {
   const [progress, setProgress] = useState<ProgressStep>('idle');
   const [result, setResult] = useState<OptimizeResponse | null>(null);
   const [error, setError] = useState('');
+  const [forceKeywords, setForceKeywords] = useState(false);
 
   const handleOptimize = async () => {
     if (!resumeContent.trim()) {
@@ -38,7 +39,7 @@ export function Popup() {
       const timer1 = setTimeout(() => setProgress('optimizing'), 4000);
       const timer2 = setTimeout(() => setProgress('compiling'), 12000);
 
-      const response = await optimizeResume(resumeContent, jobDescription);
+      const response = await optimizeResume(resumeContent, jobDescription, forceKeywords);
 
       clearTimeout(timer1);
       clearTimeout(timer2);
@@ -90,6 +91,18 @@ export function Popup() {
       )}
 
       <JobDescription value={jobDescription} onChange={setJobDescription} />
+
+      <div style={{ margin: '10px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <input 
+          type="checkbox" 
+          id="forceKeywords" 
+          checked={forceKeywords} 
+          onChange={(e) => setForceKeywords(e.target.checked)} 
+        />
+        <label htmlFor="forceKeywords" style={{ fontSize: '0.9rem', cursor: 'pointer' }}>
+          Force add all missing keywords (may look less natural)
+        </label>
+      </div>
 
       <button
         className="btn-primary btn-optimize"

@@ -43,7 +43,11 @@ app.add_middleware(
 
 
 @app.post("/optimize")
-async def optimize(resume: UploadFile, job_description: str = Form(...)):
+async def optimize(
+    resume: UploadFile, 
+    job_description: str = Form(...),
+    force_keywords: str = Form("false")
+):
     """
     Accepts a .tex resume and job description.
     Returns optimized .tex, compiled PDF, ATS score, and keyword analysis.
@@ -77,7 +81,8 @@ async def optimize(resume: UploadFile, job_description: str = Form(...)):
     logger.info("Optimizing resume with AI (this may take a while)...")
     step_start = time.time()
     try:
-        result = await optimize_resume(resume_tex, job_description, keywords)
+        force_keywords_bool = force_keywords.lower() == "true"
+        result = await optimize_resume(resume_tex, job_description, keywords, force_keywords_bool)
         logger.info(f"-> AI Optimization took {time.time() - step_start:.2f}s")
     except Exception as e:
         raise HTTPException(500, f"Failed to optimize resume: {e}")
