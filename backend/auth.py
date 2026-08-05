@@ -54,7 +54,7 @@ def send_otp_email(to_email: str, otp: str):
 
     try:
         r = resend.Emails.send({
-            "from": f"Resume Optimizer <{SMTP_EMAIL}>",
+            "from": "Resume Optimizer <onboarding@resend.dev>",
             "to": to_email,
             "subject": "Verify your email address",
             "html": f"<p>Your verification code is: <strong>{otp}</strong></p>"
