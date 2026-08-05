@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "Resume Optimizer",
+  "version": "1.0.0",
+  "description": "Optimize your LaTeX resume for job descriptions using AI",
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Resume Optimizer"
+  },
+  "permissions": ["storage"]
+}
