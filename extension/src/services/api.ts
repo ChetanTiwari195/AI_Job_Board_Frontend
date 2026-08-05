@@ -1,6 +1,8 @@
 import { OptimizeResponse } from '../types';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = import.meta.env.PROD 
+  ? 'https://resume-optimizer-extension.onrender.com' 
+  : 'http://localhost:8000';
 
 function getAuthHeaders(): Record<string, string> {
   const token = localStorage.getItem('access_token');
