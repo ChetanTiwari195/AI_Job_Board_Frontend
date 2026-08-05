@@ -4,8 +4,13 @@
   "version": "1.0.0",
   "description": "Optimize your LaTeX resume for job descriptions using AI",
   "action": {
-    "default_popup": "index.html",
     "default_title": "Resume Optimizer"
   },
-  "permissions": ["storage"]
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "index.html"
+  },
+  "permissions": ["storage", "sidePanel"]
 }

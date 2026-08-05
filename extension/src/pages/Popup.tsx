@@ -70,6 +70,8 @@ export function Popup() {
   const isProcessing =
     progress !== 'idle' && progress !== 'done' && progress !== 'error';
 
+
+
   return (
     <div className="popup">
       <header className="popup-header">

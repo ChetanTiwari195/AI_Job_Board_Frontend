@@ -1,8 +1,7 @@
 import os
-import smtplib
 import random
+import resend
 from datetime import datetime, timedelta, timezone
-from email.message import EmailMessage
 
 import jwt
 from fastapi import APIRouter, HTTPException, Depends
@@ -23,8 +22,11 @@ JWT_SECRET = os.getenv("JWT_SECRET")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
 
-SMTP_EMAIL = os.getenv("SMTP_EMAIL")
-SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
+if RESEND_API_KEY:
+    resend.api_key = RESEND_API_KEY
+
+SMTP_EMAIL = os.getenv("SMTP_EMAIL", "onboarding@resend.dev")
 
 class SignUpRequest(BaseModel):
     email: EmailStr
@@ -46,22 +48,23 @@ def create_access_token(data: dict):
     return encoded_jwt
 
 def send_otp_email(to_email: str, otp: str):
-    if not SMTP_EMAIL or not SMTP_PASSWORD or SMTP_PASSWORD == "your_16_char_app_password":
-        print(f"WARNING: SMTP credentials not fully configured. The OTP for {to_email} is {otp}")
+    if not RESEND_API_KEY:
+        print(f"WARNING: RESEND_API_KEY not configured. The OTP for {to_email} is {otp}")
         return
 
-    msg = EmailMessage()
-    msg.set_content(f"Your verification code is: {otp}")
-    msg["Subject"] = "Verify your email address"
-    msg["From"] = f"Resume Optimizer <{SMTP_EMAIL}>"
-    msg["To"] = to_email
-
     try:
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-            server.login(SMTP_EMAIL, SMTP_PASSWORD)
-            server.send_message(msg)
+        r = resend.Emails.send({
+            "from": f"Resume Optimizer <{SMTP_EMAIL}>",
+            "to": to_email,
+            "subject": "Verify your email address",
+            "html": f"<p>Your verification code is: <strong>{otp}</strong></p>"
+        })
+        print(f"Email sent via Resend: {r}")
     except Exception as e:
         print(f"Error sending email: {e}")
+        print(f"=========================================")
+        print(f"FALLBACK: The OTP for {to_email} is {otp}")
+        print(f"=========================================")
 
 @router.post("/signup")
 async def signup(request: SignUpRequest, conn=Depends(get_db)):
