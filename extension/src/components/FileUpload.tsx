@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { loadResumes, loadResume } from '../services/supabase';
+import { loadResumes, loadResume } from '../services/api';
 
 interface FileUploadProps {
   onContent: (content: string) => void;

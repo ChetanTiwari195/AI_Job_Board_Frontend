@@ -4,7 +4,7 @@ import { JobDescription } from '../components/JobDescription';
 import { ProgressBar } from '../components/ProgressBar';
 import { Results } from '../components/Results';
 import { optimizeResume } from '../services/api';
-import { saveResume, signOut } from '../services/supabase';
+import { saveResume, signOut } from '../services/api';
 import { OptimizeResponse, ProgressStep } from '../types';
 
 export function Popup() {

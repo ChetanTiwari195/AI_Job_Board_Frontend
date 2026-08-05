@@ -1,6 +1,11 @@
 import os
 import base64
+import time
+import logging
 from pathlib import Path
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 from fastapi import FastAPI, UploadFile, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,11 +13,26 @@ from dotenv import load_dotenv
 
 from ai import extract_keywords, optimize_resume
 from latex import compile_to_pdf
+from db import init_db
+from auth import router as auth_router
+from resumes import router as resumes_router
 
 # Load .env from parent directory (project root)
 load_dotenv(Path(__file__).parent.parent / ".env")
 
-app = FastAPI(title="Resume Optimizer API")
+
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await init_db()
+    yield
+
+app = FastAPI(title="Resume Optimizer API", lifespan=lifespan)
+
+app.include_router(auth_router)
+app.include_router(resumes_router)
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -45,14 +65,20 @@ async def optimize(resume: UploadFile, job_description: str = Form(...)):
         raise HTTPException(400, "Job description is empty.")
 
     # 2. Extract ATS keywords from JD
+    logger.info("Extracting ATS keywords from JD...")
+    step_start = time.time()
     try:
         keywords = await extract_keywords(job_description)
+        logger.info(f"-> Keyword extraction took {time.time() - step_start:.2f}s")
     except Exception as e:
         raise HTTPException(500, f"Failed to extract keywords: {e}")
 
     # 3. Optimize resume with AI
+    logger.info("Optimizing resume with AI (this may take a while)...")
+    step_start = time.time()
     try:
         result = await optimize_resume(resume_tex, job_description, keywords)
+        logger.info(f"-> AI Optimization took {time.time() - step_start:.2f}s")
     except Exception as e:
         raise HTTPException(500, f"Failed to optimize resume: {e}")
 
@@ -62,8 +88,11 @@ async def optimize(resume: UploadFile, job_description: str = Form(...)):
     added_skills = result["added_skills"]
 
     # 4. Compile LaTeX to PDF
+    logger.info("Compiling updated LaTeX to PDF...")
+    step_start = time.time()
     try:
         pdf_bytes = compile_to_pdf(updated_tex)
+        logger.info(f"-> PDF compilation took {time.time() - step_start:.2f}s")
     except Exception as e:
         raise HTTPException(500, f"LaTeX compilation failed: {e}")
 

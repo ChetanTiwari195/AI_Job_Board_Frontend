@@ -2,7 +2,10 @@ import os
 import subprocess
 import tempfile
 import shutil
+import time
+import logging
 
+logger = logging.getLogger(__name__)
 
 def compile_to_pdf(tex_content: str) -> bytes:
     """
@@ -18,8 +21,12 @@ def compile_to_pdf(tex_content: str) -> bytes:
         # Write .tex file
         with open(tex_path, "w", encoding="utf-8") as f:
             f.write(tex_content)
+            
+        logger.info(f"Saved temporary tex file to {tex_path}")
 
         # Run latexmk
+        logger.info("Starting latexmk compilation...")
+        latexmk_start = time.time()
         result = subprocess.run(
             [
                 "latexmk",
@@ -33,6 +40,7 @@ def compile_to_pdf(tex_content: str) -> bytes:
             timeout=60,
             cwd=tmp_dir,
         )
+        logger.info(f"latexmk compilation finished in {time.time() - latexmk_start:.2f}s (return code {result.returncode})")
 
         # Check if PDF was generated
         if not os.path.exists(pdf_path):

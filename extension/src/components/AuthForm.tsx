@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { signIn, signUp, verifyOtp } from '../services/supabase';
+import { signIn, signUp, verifyOtp } from '../services/api';
 
 interface AuthFormProps {
   onAuth: () => void;
@@ -41,42 +41,52 @@ export function AuthForm({ onAuth }: AuthFormProps) {
     }
   };
 
-  const handleVerify = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
-    try {
-      await verifyOtp(email, otp);
-      onAuth();
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+  const handleOtpChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setOtp(val);
+    
+    // Auto-verify when 6 digits are entered
+    if (val.length === 6) {
+      setError('');
+      setLoading(true);
+      try {
+        await verifyOtp(email, val);
+        onAuth();
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     }
+  };
+
+  const handleVerifySubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Verification is handled by handleOtpChange automatically
   };
 
   if (mode === 'verify') {
     return (
       <div className="auth-form">
-        <h2>Verify Email</h2>
-        <p className="muted">Check your email for the verification code.</p>
-        <form onSubmit={handleVerify}>
+        <h2>Check your email</h2>
+        <p className="muted">We sent a 6-digit verification code to {email}.</p>
+        <form onSubmit={handleVerifySubmit}>
           <input
             type="text"
-            placeholder="Enter OTP code"
+            placeholder="Enter 6-digit code"
             value={otp}
-            onChange={(e) => setOtp(e.target.value)}
+            onChange={handleOtpChange}
+            maxLength={6}
             required
             autoFocus
+            style={{ textAlign: 'center', letterSpacing: '4px', fontSize: '1.2rem' }}
           />
           {error && <p className="error">{error}</p>}
-          <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? 'Verifying...' : 'Verify'}
-          </button>
+          {loading && <p style={{ textAlign: 'center', color: '#666' }}>Verifying...</p>}
         </form>
         <p className="auth-toggle">
-          <button onClick={() => { setMode('signup'); setError(''); }}>
-            Resend code
+          <button onClick={() => { setMode('signup'); setError(''); setOtp(''); }}>
+            Use a different email
           </button>
         </p>
       </div>

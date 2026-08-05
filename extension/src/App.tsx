@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AuthForm } from './components/AuthForm';
 import { Popup } from './pages/Popup';
-import { getSession } from './services/supabase';
+import { isAuthenticated } from './services/api';
 import './App.css';
 
 function App() {
@@ -9,9 +9,8 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getSession()
-      .then((session) => setAuthenticated(!!session))
-      .finally(() => setLoading(false));
+    setAuthenticated(isAuthenticated());
+    setLoading(false);
   }, []);
 
   if (loading) {
