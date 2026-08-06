@@ -32,10 +32,6 @@ class SignUpRequest(BaseModel):
     email: EmailStr
     password: str
 
-class VerifyRequest(BaseModel):
-    email: EmailStr
-    token: str
-
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
@@ -47,96 +43,32 @@ def create_access_token(data: dict):
     encoded_jwt = jwt.encode(to_encode, JWT_SECRET, algorithm=ALGORITHM)
     return encoded_jwt
 
-def send_otp_email(to_email: str, otp: str):
-    if not RESEND_API_KEY:
-        print(f"WARNING: RESEND_API_KEY not configured. The OTP for {to_email} is {otp}")
-        return
 
-    try:
-        r = resend.Emails.send({
-            "from": "Resume Optimizer <onboarding@resend.dev>",
-            "to": to_email,
-            "subject": "Verify your email address",
-            "html": f"<p>Your verification code is: <strong>{otp}</strong></p>"
-        })
-        print(f"Email sent via Resend: {r}")
-    except Exception as e:
-        print(f"Error sending email: {e}")
-        print(f"=========================================")
-        print(f"FALLBACK: The OTP for {to_email} is {otp}")
-        print(f"=========================================")
 
 @router.post("/signup")
 async def signup(request: SignUpRequest, conn=Depends(get_db)):
     # Check if user already exists
-    existing_user = await conn.fetchrow("SELECT id, is_verified FROM custom_users WHERE email = $1", request.email)
+    existing_user = await conn.fetchrow("SELECT id FROM custom_users WHERE email = $1", request.email)
     if existing_user:
-        if existing_user["is_verified"]:
-            raise HTTPException(status_code=400, detail="User already exists and is verified.")
-        # Re-send OTP if they exist but aren't verified
-        user_id = existing_user["id"]
-        # Password might have changed, so update it just in case
-        password_hash = hash_password(request.password)
-        await conn.execute("UPDATE custom_users SET password_hash = $1 WHERE email = $2", password_hash, request.email)
-    else:
-        password_hash = hash_password(request.password)
-        await conn.execute(
-            "INSERT INTO custom_users (email, password_hash) VALUES ($1, $2)",
-            request.email, password_hash
-        )
-
-    # Generate 6-digit OTP
-    otp = str(random.randint(100000, 999999))
-    expires_at = datetime.now(timezone.utc) + timedelta(minutes=15)
-
-    await conn.execute(
-        """
-        INSERT INTO custom_otps (email, otp, expires_at)
-        VALUES ($1, $2, $3)
-        ON CONFLICT (email) DO UPDATE SET otp = EXCLUDED.otp, expires_at = EXCLUDED.expires_at
-        """,
-        request.email, otp, expires_at
+        raise HTTPException(status_code=400, detail="User already exists.")
+        
+    password_hash = hash_password(request.password)
+    user = await conn.fetchrow(
+        "INSERT INTO custom_users (email, password_hash, is_verified) VALUES ($1, $2, TRUE) RETURNING id",
+        request.email, password_hash
     )
 
-    # Send email
-    send_otp_email(request.email, otp)
-    
-    return {"message": "Verification code sent to email."}
-
-@router.post("/verify")
-async def verify(request: VerifyRequest, conn=Depends(get_db)):
-    otp_record = await conn.fetchrow("SELECT otp, expires_at FROM custom_otps WHERE email = $1", request.email)
-    
-    if not otp_record:
-        raise HTTPException(status_code=400, detail="Invalid request. Please sign up first.")
-    
-    if str(otp_record["otp"]) != str(request.token):
-        raise HTTPException(status_code=400, detail="Invalid verification code.")
-        
-    if otp_record["expires_at"] < datetime.now(timezone.utc):
-        raise HTTPException(status_code=400, detail="Verification code expired.")
-
-    # Mark user as verified
-    await conn.execute("UPDATE custom_users SET is_verified = TRUE WHERE email = $1", request.email)
-    
-    # Delete OTP
-    await conn.execute("DELETE FROM custom_otps WHERE email = $1", request.email)
-
-    # Log them in by generating JWT
-    user = await conn.fetchrow("SELECT id FROM custom_users WHERE email = $1", request.email)
     access_token = create_access_token(data={"sub": str(user["id"])})
-    
     return {"access_token": access_token, "token_type": "bearer"}
+
+
 
 @router.post("/login")
 async def login(request: LoginRequest, conn=Depends(get_db)):
-    user = await conn.fetchrow("SELECT id, password_hash, is_verified FROM custom_users WHERE email = $1", request.email)
+    user = await conn.fetchrow("SELECT id, password_hash FROM custom_users WHERE email = $1", request.email)
     
     if not user or not verify_password(request.password, user["password_hash"]):
         raise HTTPException(status_code=400, detail="Invalid email or password.")
-        
-    if not user["is_verified"]:
-        raise HTTPException(status_code=400, detail="Please verify your email first.")
 
     access_token = create_access_token(data={"sub": str(user["id"])})
     return {"access_token": access_token, "token_type": "bearer"}

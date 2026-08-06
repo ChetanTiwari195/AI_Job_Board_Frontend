@@ -31,15 +31,6 @@ async def init_db():
             )
         """)
         
-        # Create OTPs table
-        await conn.execute("""
-            CREATE TABLE IF NOT EXISTS custom_otps (
-                email TEXT PRIMARY KEY,
-                otp TEXT NOT NULL,
-                expires_at TIMESTAMP WITH TIME ZONE NOT NULL
-            )
-        """)
-        
         # Create resumes table
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS custom_resumes (

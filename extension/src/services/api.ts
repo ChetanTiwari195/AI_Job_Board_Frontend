@@ -21,23 +21,11 @@ export async function signUp(email: string, password: string) {
     const error = await res.json().catch(() => ({ detail: 'Unknown error' }));
     throw new Error(error.detail || `Server error: ${res.status}`);
   }
-  return res.json();
-}
-
-export async function verifyOtp(email: string, token: string) {
-  const res = await fetch(`${API_URL}/auth/verify`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, token }),
-  });
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({ detail: 'Unknown error' }));
-    throw new Error(error.detail || `Server error: ${res.status}`);
-  }
   const data = await res.json();
   localStorage.setItem('access_token', data.access_token);
   return data;
 }
+
 
 export async function signIn(email: string, password: string) {
   const res = await fetch(`${API_URL}/auth/login`, {
