@@ -1,6 +1,4 @@
 import os
-import random
-import resend
 from datetime import datetime, timedelta, timezone
 
 import jwt
@@ -21,12 +19,6 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 JWT_SECRET = os.getenv("JWT_SECRET")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
-
-RESEND_API_KEY = os.getenv("RESEND_API_KEY")
-if RESEND_API_KEY:
-    resend.api_key = RESEND_API_KEY
-
-SMTP_EMAIL = os.getenv("SMTP_EMAIL", "onboarding@resend.dev")
 
 class SignUpRequest(BaseModel):
     email: EmailStr
