@@ -46,7 +46,7 @@ async def signup(request: SignUpRequest, conn=Depends(get_db)):
         
     password_hash = hash_password(request.password)
     user = await conn.fetchrow(
-        "INSERT INTO custom_users (email, password_hash, is_verified) VALUES ($1, $2, TRUE) RETURNING id",
+        "INSERT INTO custom_users (email, password_hash) VALUES ($1, $2) RETURNING id",
         request.email, password_hash
     )
 
