@@ -62,8 +62,8 @@ async def save_resume(request: SaveResumeRequest, user_id: str = Depends(get_cur
         """
         INSERT INTO custom_resumes (id, user_id, name, content, extracted_keywords, updated_at)
         VALUES ($1, $2, $3, $4, $5, NOW())
-        ON CONFLICT (user_id) 
-        DO UPDATE SET name = EXCLUDED.name, content = EXCLUDED.content, extracted_keywords = EXCLUDED.extracted_keywords, updated_at = NOW()
+        ON CONFLICT (user_id, name) 
+        DO UPDATE SET content = EXCLUDED.content, extracted_keywords = EXCLUDED.extracted_keywords, updated_at = NOW()
         RETURNING id, name, updated_at
         """,
         new_id, user_id, request.name, request.content, keywords_json
