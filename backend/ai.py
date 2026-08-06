@@ -75,6 +75,38 @@ Job Description:
     cleaned = _clean_json_response(response)
     return json.loads(cleaned)
 
+async def extract_resume_skills(resume_tex: str) -> list:
+    """Extract a simple list of technical and soft skills from a resume."""
+    prompt = f"""Analyze the following resume and extract all relevant technical skills, soft skills, experience, location and domain knowledge.
+
+Return ONLY valid JSON with this exact structure (a single flat list of strings):
+[
+    "skill1",
+    "skill2",
+    "skill3",
+    "location",
+    "experience"
+]
+
+Resume:
+{resume_tex}"""
+
+    messages = [
+        {
+            "role": "system",
+            "content": "You are a resume keyword extraction expert. Return only valid JSON array of strings, no markdown code fences, no explanations.",
+        },
+        {"role": "user", "content": prompt},
+    ]
+
+    response = await _call_openrouter(messages)
+    cleaned = _clean_json_response(response)
+    try:
+        return json.loads(cleaned)
+    except Exception as e:
+        print(f"Error parsing resume skills: {e}")
+        return []
+
 
 async def optimize_resume(
     resume_tex: str, job_description: str, keywords: dict, force_keywords: bool = False

@@ -3,8 +3,11 @@ import jwt
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
+import json
+import uuid
 
 from db import get_db
+from ai import extract_resume_skills
 
 router = APIRouter(prefix="/resumes", tags=["resumes"])
 
@@ -49,16 +52,21 @@ async def get_resume(resume_id: str, user_id: str = Depends(get_current_user_id)
 
 @router.post("/")
 async def save_resume(request: SaveResumeRequest, user_id: str = Depends(get_current_user_id), conn=Depends(get_db)):
-    # Upsert logic based on name
+    # Extract skills/keywords from the resume content
+    extracted_keywords = await extract_resume_skills(request.content)
+    keywords_json = json.dumps(extracted_keywords) if extracted_keywords else None
+
+    # Upsert logic based on name, including extracted_keywords
+    new_id = str(uuid.uuid4())
     row = await conn.fetchrow(
         """
-        INSERT INTO custom_resumes (user_id, name, content, updated_at)
-        VALUES ($1, $2, $3, NOW())
-        ON CONFLICT (user_id, name) 
-        DO UPDATE SET content = EXCLUDED.content, updated_at = NOW()
+        INSERT INTO custom_resumes (id, user_id, name, content, extracted_keywords, updated_at)
+        VALUES ($1, $2, $3, $4, $5, NOW())
+        ON CONFLICT (user_id) 
+        DO UPDATE SET name = EXCLUDED.name, content = EXCLUDED.content, extracted_keywords = EXCLUDED.extracted_keywords, updated_at = NOW()
         RETURNING id, name, updated_at
         """,
-        user_id, request.name, request.content
+        new_id, user_id, request.name, request.content, keywords_json
     )
     return dict(row)
 
