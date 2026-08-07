@@ -15,7 +15,7 @@ export const Login: React.FC = () => {
     setError("");
 
     try {
-      const API_BASE = import.meta.env.API_BASE || "http://localhost:8002/api";
+      const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? "https://ai-job-board-backend-6s14.onrender.com/api" : "http://localhost:8002/api");
       const endpoint = isLogin ? "/auth/login" : "/auth/signup";
       const payload = isLogin
         ? new URLSearchParams({ username: email, password: password })
