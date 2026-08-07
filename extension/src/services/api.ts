@@ -2,7 +2,7 @@ import { OptimizeResponse } from '../types';
 
 const API_URL = import.meta.env.PROD 
   ? 'https://resume-optimizer-extension.onrender.com' 
-  : 'http://localhost:8001';
+  : 'http://localhost:8002/api';
 
 function getAuthHeaders(): Record<string, string> {
   const token = localStorage.getItem('access_token');
@@ -28,10 +28,14 @@ export async function signUp(email: string, password: string) {
 
 
 export async function signIn(email: string, password: string) {
+  const params = new URLSearchParams();
+  params.append('username', email);
+  params.append('password', password);
+  
   const res = await fetch(`${API_URL}/auth/login`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: params,
   });
   if (!res.ok) {
     const error = await res.json().catch(() => ({ detail: 'Unknown error' }));
@@ -100,7 +104,7 @@ export async function optimizeResume(
   formData.append('job_description', jobDescription);
   formData.append('force_keywords', forceKeywords.toString());
 
-  const response = await fetch(`${API_URL}/optimize`, {
+  const response = await fetch(`${API_URL}/resumes/optimize`, {
     method: 'POST',
     body: formData,
     // Note: optimization might not require auth, but if it does, add getAuthHeaders() here

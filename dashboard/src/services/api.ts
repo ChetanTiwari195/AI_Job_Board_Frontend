@@ -13,6 +13,9 @@ export interface Job {
     saved: boolean;
     applied: boolean;
     created_at: string;
+    ai_score?: number;
+    ai_summary?: string;
+    missing_skills?: string[];
 }
 
 export interface MatchResponse {
@@ -98,7 +101,7 @@ export const updateSettings = async (data: Partial<UserSettings>): Promise<UserS
 
 // ─── Resumes (Talks to Resume Optimizer Backend) ─────────────────
 
-const RESUMES_API_BASE = "http://localhost:8001/resumes";
+const RESUMES_API_BASE = "http://localhost:8002/api/resumes";
 
 export interface SavedResume {
     id: string;

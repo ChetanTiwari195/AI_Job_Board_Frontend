@@ -40,8 +40,8 @@ export const JobCard: React.FC<JobCardProps> = ({ job, onClick, onSave, onApply 
             
             <div className="flex items-center justify-between mt-4">
                 <div className="flex items-center gap-2">
-                    {job.ai_score !== null && (
-                        <div className={`px-2 py-1 rounded-md text-xs font-medium ${job.ai_score > 80 ? 'bg-green-900/50 text-green-400' : job.ai_score > 50 ? 'bg-yellow-900/50 text-yellow-400' : 'bg-red-900/50 text-red-400'}`}>
+                    {job.ai_score !== undefined && job.ai_score !== null && (
+                        <div className={`px-2 py-1 rounded-md text-xs font-medium ${job.ai_score! > 80 ? 'bg-green-900/50 text-green-400' : job.ai_score! > 50 ? 'bg-yellow-900/50 text-yellow-400' : 'bg-red-900/50 text-red-400'}`}>
                             {job.ai_score}% Match
                         </div>
                     )}
