@@ -1,4 +1,4 @@
-import { OptimizeResponse } from '../types';
+import { OptimizeResponse } from "../types";
 
 interface ResultsProps {
   result: OptimizeResponse;
@@ -6,11 +6,11 @@ interface ResultsProps {
 
 export function Results({ result }: ResultsProps) {
   const downloadTex = () => {
-    const blob = new Blob([result.updated_tex], { type: 'text/plain' });
+    const blob = new Blob([result.updated_tex], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'updated_resume.tex';
+    a.download = "updated_resume.tex";
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -21,31 +21,37 @@ export function Results({ result }: ResultsProps) {
     for (let i = 0; i < binary.length; i++) {
       bytes[i] = binary.charCodeAt(i);
     }
-    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const blob = new Blob([bytes], { type: "application/pdf" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'updated_resume.pdf';
+    a.download = "updated_resume.pdf";
     a.click();
     URL.revokeObjectURL(url);
   };
 
   const scoreColor =
-    result.ats_score >= 80 ? '#22c55e' : result.ats_score >= 60 ? '#eab308' : '#ef4444';
+    result.ats_score >= 80
+      ? "#22c55e"
+      : result.ats_score >= 60
+        ? "#eab308"
+        : "#ef4444";
 
   return (
     <div className="results">
       <div className="ats-score">
         <h3>ATS Score</h3>
         <div className="score" style={{ color: scoreColor }}>
-          {result.ats_score}/100
+          {result.ats_score}
         </div>
       </div>
 
       {result.missing_keywords.length > 0 && (
         <div className="keyword-section">
           <h3>Missing Keywords</h3>
-          <p className="muted">These JD keywords couldn't be naturally incorporated:</p>
+          <p className="muted">
+            These JD keywords couldn't be naturally incorporated:
+          </p>
           <div className="keyword-list">
             {result.missing_keywords.map((kw) => (
               <span key={kw} className="keyword missing">
