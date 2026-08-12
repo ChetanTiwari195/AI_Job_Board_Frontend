@@ -515,3 +515,94 @@ textarea:focus {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+/* ===== Keyword Selector ===== */
+
+.keyword-selector {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #222;
+}
+
+.keyword-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.btn-select-toggle {
+  background: none;
+  border: none;
+  color: #60a5fa;
+  cursor: pointer;
+  font-size: 12px;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.btn-select-toggle:hover {
+  color: #93c5fd;
+}
+
+.keyword.matched {
+  background: #1a2e05;
+  color: #bef264;
+  border: 1px solid #365314;
+}
+
+.keyword.selectable {
+  background: #3b1319;
+  color: #fca5a5;
+  border: 1px solid #5c2027;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.keyword.selectable:hover {
+  background: #4c1d24;
+  border-color: #7f2d35;
+  transform: translateY(-1px);
+}
+
+.keyword.selectable:active {
+  transform: translateY(0);
+}
+
+.keyword.selectable.selected {
+  background: #1e3a5f;
+  color: #93c5fd;
+  border-color: #60a5fa;
+  box-shadow: 0 0 8px rgba(96, 165, 250, 0.3);
+}
+
+.keyword.selectable.selected:hover {
+  background: #234b78;
+  border-color: #93c5fd;
+}
+
+.kw-check {
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.selection-count {
+  font-size: 12px;
+  color: #888;
+  margin-top: 10px;
+  text-align: right;
+}
+
+.btn-analyze {
+  margin-top: 8px;
+  margin-bottom: 16px;
+  background: #7c3aed;
+}
+
+.btn-analyze:hover:not(:disabled) {
+  background: #6d28d9;
+}
+

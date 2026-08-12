@@ -1,4 +1,4 @@
-import { OptimizeResponse } from '../types';
+import { OptimizeResponse, AnalyzeResponse } from '../types';
 
 const API_URL = import.meta.env.PROD 
   ? 'https://ai-job-board-backend-6s14.onrender.com/api' 
@@ -91,18 +91,47 @@ export async function deleteResume(id: string) {
   return res.json();
 }
 
-// --- AI Optimizer ---
+// --- ATS Analysis (lightweight keyword comparison) ---
+
+export async function analyzeResume(
+  resumeTex: string,
+  jobDescription: string,
+  resumeId?: string,
+  jobId?: string,
+): Promise<AnalyzeResponse> {
+  const formData = new FormData();
+  const blob = new Blob([resumeTex], { type: 'text/plain' });
+  formData.append('resume', blob, 'resume.tex');
+  formData.append('job_description', jobDescription);
+  if (resumeId) formData.append('resume_id', resumeId);
+  if (jobId) formData.append('job_id', jobId);
+
+  const response = await fetch(`${API_URL}/resumes/analyze`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ detail: 'Unknown error' }));
+    throw new Error(error.detail || `Server error: ${response.status}`);
+  }
+
+  return response.json();
+}
+
+// --- AI Optimizer (full optimization with selected keywords) ---
 
 export async function optimizeResume(
   resumeTex: string,
   jobDescription: string,
-  forceKeywords: boolean = false
+  selectedKeywords: string[] = [],
 ): Promise<OptimizeResponse> {
   const formData = new FormData();
   const blob = new Blob([resumeTex], { type: 'text/plain' });
   formData.append('resume', blob, 'resume.tex');
   formData.append('job_description', jobDescription);
-  formData.append('force_keywords', forceKeywords.toString());
+  formData.append('selected_keywords', JSON.stringify(selectedKeywords));
 
   const response = await fetch(`${API_URL}/resumes/optimize`, {
     method: 'POST',

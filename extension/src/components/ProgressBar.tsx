@@ -6,6 +6,7 @@ interface ProgressBarProps {
 
 const STEPS: { key: ProgressStep; label: string }[] = [
   { key: 'uploading', label: 'Reading Resume...' },
+  { key: 'analyzing', label: 'Analyzing Keywords...' },
   { key: 'extracting_keywords', label: 'Extracting Keywords...' },
   { key: 'optimizing', label: 'Optimizing Resume...' },
   { key: 'compiling', label: 'Generating PDF...' },
@@ -15,11 +16,17 @@ const STEPS: { key: ProgressStep; label: string }[] = [
 export function ProgressBar({ step }: ProgressBarProps) {
   if (step === 'idle') return null;
 
-  const currentIndex = STEPS.findIndex((s) => s.key === step);
+  // For the analyze-only flow, show only analyzing + done
+  const isAnalyzeFlow = step === 'analyzing';
+  const visibleSteps = isAnalyzeFlow
+    ? STEPS.filter((s) => s.key === 'analyzing' || s.key === 'done')
+    : STEPS.filter((s) => s.key !== 'analyzing');
+
+  const currentIndex = visibleSteps.findIndex((s) => s.key === step);
 
   return (
     <div className="progress-bar">
-      {STEPS.map((s, i) => {
+      {visibleSteps.map((s, i) => {
         let status: 'pending' | 'active' | 'complete' = 'pending';
         if (i < currentIndex) status = 'complete';
         else if (i === currentIndex) status = step === 'done' ? 'complete' : 'active';

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { loadResumes, loadResume } from '../services/api';
 
 interface FileUploadProps {
-  onContent: (content: string) => void;
+  onContent: (content: string, resumeId?: string) => void;
   content: string;
 }
 
@@ -35,7 +35,7 @@ export function FileUpload({ onContent, content }: FileUploadProps) {
   const handleLoadSaved = async (id: string, name: string) => {
     try {
       const resume = await loadResume(id);
-      onContent(resume.content);
+      onContent(resume.content, id);
       setFileName(name);
     } catch (err) {
       console.error('Failed to load resume:', err);
