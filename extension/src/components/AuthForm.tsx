@@ -3,9 +3,11 @@ import { signIn, signUp } from '../services/api';
 
 interface AuthFormProps {
   onAuth: () => void;
+  theme: 'light' | 'dark';
+  toggleTheme: () => void;
 }
 
-export function AuthForm({ onAuth }: AuthFormProps) {
+export function AuthForm({ onAuth, theme, toggleTheme }: AuthFormProps) {
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -42,6 +44,9 @@ export function AuthForm({ onAuth }: AuthFormProps) {
 
   return (
     <div className="auth-form">
+      <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle Theme" style={{ position: 'absolute', top: '16px', right: '20px' }}>
+        {theme === 'light' ? '🌙' : '☀️'}
+      </button>
       <h1>Resume Optimizer</h1>
       <h2>{mode === 'login' ? 'Login' : 'Sign Up'}</h2>
       <form onSubmit={mode === 'login' ? handleLogin : handleSignup}>

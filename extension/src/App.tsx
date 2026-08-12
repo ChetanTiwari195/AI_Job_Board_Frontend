@@ -7,11 +7,21 @@ import './App.css';
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
     setAuthenticated(isAuthenticated());
     setLoading(false);
+    
+    // Set initial theme on body
+    document.documentElement.setAttribute('data-theme', theme);
   }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
+  };
 
   if (loading) {
     return (
@@ -22,11 +32,15 @@ function App() {
     );
   }
 
-  if (!authenticated) {
-    return <AuthForm onAuth={() => setAuthenticated(true)} />;
-  }
-
-  return <Popup />;
+  return (
+    <>
+      {!authenticated ? (
+        <AuthForm onAuth={() => setAuthenticated(true)} theme={theme} toggleTheme={toggleTheme} />
+      ) : (
+        <Popup theme={theme} toggleTheme={toggleTheme} />
+      )}
+    </>
+  );
 }
 
 export default App;

@@ -4,11 +4,16 @@ import { JobDescription } from '../components/JobDescription';
 import { ProgressBar } from '../components/ProgressBar';
 import { Results } from '../components/Results';
 import { KeywordSelector } from '../components/KeywordSelector';
-import { analyzeResume, optimizeResume } from '../services/api';
-import { saveResume, signOut } from '../services/api';
-import { OptimizeResponse, AnalyzeResponse, ProgressStep } from '../types';
+import { analyzeResume, optimizeResume, saveResume, signOut } from '../services/api';
+import { AnalyzeResponse, OptimizeResponse, ProgressStep } from '../types';
+import { LogOut } from 'lucide-react';
 
-export function Popup() {
+interface PopupProps {
+  theme: 'light' | 'dark';
+  toggleTheme: () => void;
+}
+
+export function Popup({ theme, toggleTheme }: PopupProps) {
   const [resumeContent, setResumeContent] = useState('');
   const [jobDescription, setJobDescription] = useState('');
   const [progress, setProgress] = useState<ProgressStep>('idle');
@@ -144,9 +149,14 @@ export function Popup() {
     <div className="popup">
       <header className="popup-header">
         <h1>Resume Optimizer</h1>
-        <button className="btn-text" onClick={handleLogout}>
-          Logout
-        </button>
+        <div className="header-actions" style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+          <button onClick={toggleTheme} aria-label="Toggle Theme" style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px' }}>
+            {theme === 'light' ? '🌙' : '☀️'}
+          </button>
+          <button className="btn-text" onClick={handleLogout} title="Logout" aria-label="Logout">
+            <LogOut size={18} />
+          </button>
+        </div>
       </header>
 
       <FileUpload onContent={handleResumeContent} content={resumeContent} />

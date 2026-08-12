@@ -27,6 +27,22 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   return token ? children : <Navigate to="/login" />;
 };
 
+const ThemeToggle = () => {
+  const [theme, setTheme] = React.useState('light');
+  
+  React.useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+  }, [theme]);
+
+  const toggle = () => setTheme(t => t === 'light' ? 'dark' : 'light');
+
+  return (
+    <button onClick={toggle} className="fixed top-4 right-4 z-50 p-2 neo-out rounded-full flex items-center justify-center w-10 h-10 text-lg transition-all hover:neo-in cursor-pointer">
+      {theme === 'light' ? '🌙' : '☀️'}
+    </button>
+  );
+};
+
 const Sidebar: React.FC = () => {
   const location = useLocation();
   const { logout } = useAuth();
@@ -60,21 +76,21 @@ const Sidebar: React.FC = () => {
   ];
 
   return (
-    <aside className="w-64 bg-gray-900 border-r border-gray-800 h-screen hidden md:block fixed left-0 top-0">
+    <aside className="w-64 neo-out h-screen hidden md:block fixed left-0 top-0">
       <div className="p-6">
         <h2 className="text-xl font-bold bg-linear-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
           AI Job Board
         </h2>
       </div>
-      <nav className="px-4 mt-6 space-y-2">
+      <nav className="px-4 mt-6 space-y-3">
         {navItems.map((item) => (
           <Link
             key={item.path}
             to={item.path}
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
               location.pathname === item.path
-                ? "bg-blue-600/10 text-blue-400 border border-blue-500/20"
-                : "text-gray-400 hover:text-gray-200 hover:bg-gray-800"
+                ? "neo-in text-[var(--primary)]"
+                : "text-[var(--text-muted)] hover:text-[var(--text-color)] hover:neo-out-sm"
             }`}
           >
             {item.icon}
@@ -82,10 +98,10 @@ const Sidebar: React.FC = () => {
           </Link>
         ))}
       </nav>
-      <div className="absolute bottom-0 w-full p-4 border-t border-gray-800">
+      <div className="absolute bottom-0 w-full p-6">
         <button 
           onClick={logout}
-          className="w-full py-2 px-4 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition-colors"
+          className="neo-btn w-full py-3 px-4 rounded-xl font-semibold cursor-pointer"
         >
           Logout
         </button>
@@ -97,34 +113,34 @@ const Sidebar: React.FC = () => {
 const MobileNav: React.FC = () => {
   const location = useLocation();
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-800 flex justify-around p-3 z-40">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 neo-out flex justify-around p-3 z-40 rounded-t-2xl">
       <Link
         to="/"
-        className={`p-2 ${location.pathname === "/" ? "text-blue-400" : "text-gray-500"}`}
+        className={`p-2 rounded-xl transition-all ${location.pathname === "/" ? "neo-in text-[var(--primary)]" : "text-[var(--text-muted)] hover:neo-out-sm"}`}
       >
         <LayoutDashboard className="w-6 h-6" />
       </Link>
       <Link
         to="/matches"
-        className={`p-2 ${location.pathname === "/matches" ? "text-blue-400" : "text-gray-500"}`}
+        className={`p-2 rounded-xl transition-all ${location.pathname === "/matches" ? "neo-in text-[var(--primary)]" : "text-[var(--text-muted)] hover:neo-out-sm"}`}
       >
         <Star className="w-6 h-6" />
       </Link>
       <Link
         to="/resumes"
-        className={`p-2 ${location.pathname === "/resumes" ? "text-blue-400" : "text-gray-500"}`}
+        className={`p-2 rounded-xl transition-all ${location.pathname === "/resumes" ? "neo-in text-[var(--primary)]" : "text-[var(--text-muted)] hover:neo-out-sm"}`}
       >
         <FileText className="w-6 h-6" />
       </Link>
       <Link
         to="/saved"
-        className={`p-2 ${location.pathname === "/saved" ? "text-blue-400" : "text-gray-500"}`}
+        className={`p-2 rounded-xl transition-all ${location.pathname === "/saved" ? "neo-in text-[var(--primary)]" : "text-[var(--text-muted)] hover:neo-out-sm"}`}
       >
         <Bookmark className="w-6 h-6" />
       </Link>
       <Link
         to="/settings"
-        className={`p-2 ${location.pathname === "/settings" ? "text-blue-400" : "text-gray-500"}`}
+        className={`p-2 rounded-xl transition-all ${location.pathname === "/settings" ? "neo-in text-[var(--primary)]" : "text-[var(--text-muted)] hover:neo-out-sm"}`}
       >
         <SettingsIcon className="w-6 h-6" />
       </Link>
@@ -134,9 +150,9 @@ const MobileNav: React.FC = () => {
 
 const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <div className="min-h-screen bg-gray-950 flex">
+    <div className="min-h-screen flex">
       <Sidebar />
-      <main className="flex-1 md:ml-64 mb-16 md:mb-0">
+      <main className="flex-1 md:ml-64 mb-16 md:mb-0 bg-transparent">
         {children}
       </main>
       <MobileNav />
@@ -147,6 +163,7 @@ const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) 
 const App: React.FC = () => {
   return (
     <AuthProvider>
+      <ThemeToggle />
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
