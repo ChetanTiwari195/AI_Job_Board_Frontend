@@ -20,7 +20,7 @@ import { Login } from "./pages/Login";
 import { ResumeMatches } from "./pages/ResumeMatches";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { Navigate } from "react-router-dom";
-import { Star } from "lucide-react";
+import { Star, Moon, Sun } from "lucide-react";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { token } = useAuth();
@@ -38,7 +38,7 @@ const ThemeToggle = () => {
 
   return (
     <button onClick={toggle} className="fixed top-4 right-4 z-50 p-2 neo-out rounded-full flex items-center justify-center w-10 h-10 text-lg transition-all hover:neo-in cursor-pointer">
-      {theme === 'light' ? '🌙' : '☀️'}
+      {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
     </button>
   );
 };

@@ -87,36 +87,36 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-950">
-      <div className="bg-gray-900 p-8 rounded-xl border border-gray-800 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center text-white mb-6">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--bg-color)]">
+      <div className="neo-out p-8 w-full max-w-md bg-[var(--bg-color)]">
+        <h2 className="text-2xl font-bold text-center text-[var(--text-color)] mb-6">
           {showOtpInput ? "Enter Verification Code" : (isLogin ? "Login to AI Job Board" : "Create an Account")}
         </h2>
-        {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
-        {message && <p className="text-green-500 mb-4 text-center">{message}</p>}
+        {error && <p className="text-red-500 mb-4 text-center font-bold">{error}</p>}
+        {message && <p className="text-green-500 mb-4 text-center font-bold">{message}</p>}
 
         {!showOtpInput ? (
           <>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
+                <label className="block text-sm font-bold text-[var(--text-color)] mb-1">
                   Email
                 </label>
                 <input
                   type="email"
-                  className="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-lg focus:outline-hidden focus:border-blue-500"
+                  className="neo-input w-full px-4 py-3"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
+                <label className="block text-sm font-bold text-[var(--text-color)] mb-1">
                   Password
                 </label>
                 <input
                   type="password"
-                  className="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-lg focus:outline-hidden focus:border-blue-500"
+                  className="neo-input w-full px-4 py-3"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -125,18 +125,18 @@ export const Login: React.FC = () => {
 
               <button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                className="neo-btn w-full py-3 px-4 mt-4"
               >
                 {isLogin ? "Login" : "Sign Up"}
               </button>
             </form>
 
-            <p className="mt-4 text-center text-sm text-gray-400">
+            <p className="mt-4 text-center text-sm text-[var(--text-muted)] font-bold">
               {isLogin ? "Don't have an account? " : "Already have an account? "}
               <button
                 type="button"
                 onClick={() => setIsLogin(!isLogin)}
-                className="text-blue-400 hover:underline"
+                className="text-[var(--primary)] hover:underline"
               >
                 {isLogin ? "Sign up" : "Login"}
               </button>
@@ -145,13 +145,13 @@ export const Login: React.FC = () => {
         ) : (
           <form onSubmit={handleOtpSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">
+              <label className="block text-sm font-bold text-[var(--text-color)] mb-1">
                 6-Digit OTP Code
               </label>
               <input
                 type="text"
                 maxLength={6}
-                className="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-lg focus:outline-hidden focus:border-blue-500 text-center tracking-widest text-lg"
+                className="neo-input w-full px-4 py-3 text-center tracking-widest text-lg font-bold"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
                 required
@@ -160,7 +160,7 @@ export const Login: React.FC = () => {
             
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+              className="neo-btn w-full py-3 px-4 mt-4"
             >
               Verify Code
             </button>
@@ -172,7 +172,7 @@ export const Login: React.FC = () => {
                 setOtp("");
                 setMessage("");
               }}
-              className="w-full bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-lg transition-colors mt-2"
+              className="w-full bg-transparent border-2 border-[var(--border-color)] text-[var(--text-color)] font-bold py-3 px-4 transition-all hover:bg-[var(--text-color)] hover:text-[var(--bg-color)] mt-2"
             >
               Back to Login
             </button>

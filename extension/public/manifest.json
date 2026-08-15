@@ -12,5 +12,12 @@
   "side_panel": {
     "default_path": "index.html"
   },
-  "permissions": ["storage", "sidePanel"]
+  "permissions": ["storage", "sidePanel"],
+  "host_permissions": [
+    "https://drive.google.com/*",
+    "https://*.googleusercontent.com/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; img-src 'self' data: https://drive.google.com https://*.googleusercontent.com;"
+  }
 }

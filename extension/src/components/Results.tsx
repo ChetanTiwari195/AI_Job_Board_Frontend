@@ -1,3 +1,4 @@
+import { AlertTriangle, FileText } from 'lucide-react';
 import { OptimizeResponse } from "../types";
 
 interface ResultsProps {
@@ -64,7 +65,7 @@ export function Results({ result }: ResultsProps) {
 
       {result.added_skills.length > 0 && (
         <div className="keyword-section">
-          <h3>⚠️ Skills Added</h3>
+          <h3><AlertTriangle size={18} className='inline mr-2' /> Skills Added</h3>
           <p className="muted">Verify you're comfortable claiming these:</p>
           <div className="keyword-list">
             {result.added_skills.map((skill) => (
@@ -80,10 +81,10 @@ export function Results({ result }: ResultsProps) {
         <h3>Downloads</h3>
         <div className="download-buttons">
           <button className="btn-download" onClick={downloadTex}>
-            📄 Download .tex
+            <FileText size={16} className='inline mr-1' /> Download .tex
           </button>
           <button className="btn-download" onClick={downloadPdf}>
-            📑 Download PDF
+            <FileText size={16} className='inline mr-1' /> Download PDF
           </button>
         </div>
       </div>

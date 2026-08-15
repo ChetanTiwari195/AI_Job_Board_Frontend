@@ -1,6 +1,6 @@
 import { OptimizeResponse, AnalyzeResponse } from '../types';
 
-const API_URL = import.meta.env.PROD 
+export const API_URL = import.meta.env.PROD 
   ? 'https://ai-job-board-backend-6s14.onrender.com/api' 
   : 'http://localhost:8002/api';
 

@@ -1,3 +1,4 @@
+import { Check, X, Sparkles } from 'lucide-react';
 import { AnalyzeResponse } from "../types";
 
 interface KeywordSelectorProps {
@@ -39,7 +40,7 @@ export function KeywordSelector({
       {/* Matched Keywords */}
       {analysis.matched_keywords.length > 0 && (
         <div className="keyword-section">
-          <h3>✅ Matched Keywords</h3>
+          <h3><Check size={18} className='inline mr-2' /> Matched Keywords</h3>
           <p className="muted">Already present in your resume</p>
           <div className="keyword-list">
             {analysis.matched_keywords.map((kw) => (
@@ -55,7 +56,7 @@ export function KeywordSelector({
       {analysis.missing_keywords.length > 0 && (
         <div className="keyword-section">
           <div className="keyword-section-header">
-            <h3>❌ Missing Keywords</h3>
+            <h3><X size={18} className='inline mr-2' /> Missing Keywords</h3>
             <button
               className="btn-select-toggle"
               onClick={allSelected ? onDeselectAll : onSelectAll}
@@ -74,7 +75,7 @@ export function KeywordSelector({
                 onClick={() => onToggleKeyword(kw)}
               >
                 {selectedKeywords.has(kw) && (
-                  <span className="kw-check">✓</span>
+                  <span className="kw-check"><Check size={14} className='inline' /></span>
                 )}
                 {kw}
               </button>
@@ -90,7 +91,7 @@ export function KeywordSelector({
       {analysis.missing_keywords.length === 0 && (
         <div className="keyword-section">
           <p className="success">
-            🎉 Your resume already contains all JD keywords!
+            <Sparkles size={18} className='inline mr-2' /> Your resume already contains all JD keywords!
           </p>
         </div>
       )}

@@ -1,3 +1,4 @@
+import { Moon, Sun, Save, Search, Zap } from 'lucide-react';
 import { useState } from 'react';
 import { FileUpload } from '../components/FileUpload';
 import { JobDescription } from '../components/JobDescription';
@@ -151,7 +152,7 @@ export function Popup({ theme, toggleTheme }: PopupProps) {
         <h1>Resume Optimizer</h1>
         <div className="header-actions" style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
           <button onClick={toggleTheme} aria-label="Toggle Theme" style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px' }}>
-            {theme === 'light' ? '🌙' : '☀️'}
+            {theme === 'light' ? <Moon size={16} /> : <Sun size={16} color="white" />}
           </button>
           <button className="btn-text" onClick={handleLogout} title="Logout" aria-label="Logout">
             <LogOut size={18} />
@@ -163,7 +164,7 @@ export function Popup({ theme, toggleTheme }: PopupProps) {
 
       {resumeContent && (
         <button className="btn-secondary" onClick={handleSaveResume}>
-          💾 Save Resume to Cloud
+          <Save size={16} className="inline mr-1" /> Save Resume to Cloud
         </button>
       )}
 
@@ -181,7 +182,7 @@ export function Popup({ theme, toggleTheme }: PopupProps) {
         onClick={handleAnalyze}
         disabled={isProcessing}
       >
-        {isAnalyzing ? 'Analyzing...' : '🔍 Get ATS Score & Keywords'}
+        {isAnalyzing ? 'Analyzing...' : <><Search size={16} className="inline mr-1" /> Get ATS Score & Keywords</>}
       </button>
 
       {error && <p className="error">{error}</p>}
@@ -210,7 +211,7 @@ export function Popup({ theme, toggleTheme }: PopupProps) {
         >
           {isOptimizing
             ? 'Processing...'
-            : `🚀 Optimize with ${selectedKeywords.size} Selected Keywords`}
+            : <><Zap size={16} className="inline mr-1" /> Optimize with {selectedKeywords.size} Selected Keywords</>}
         </button>
       )}
 

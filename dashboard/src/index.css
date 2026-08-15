@@ -1,33 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Catamaran:wght@400;600;700;800&display=swap');
 @import "tailwindcss";
+
+@theme {
+  --font-sans: 'Catamaran', sans-serif;
+}
 
 :root {
   color-scheme: light dark;
   
-  --bg-color: #e0e5ec;
-  --text-color: #4a5568;
-  --text-muted: #718096;
-  --shadow-light: #ffffff;
-  --shadow-dark: #a3b1c6;
-  --primary: #60a5fa;
-  --primary-hover: #3b82f6;
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --text-muted: #000000;
+  --shadow-light: transparent;
+  --shadow-dark: rgba(0, 0, 0, 0.15);
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --border-color: #000000;
   
-  --shadow-out: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
-  --shadow-out-sm: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
-  --shadow-in: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
-  --shadow-in-sm: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+  --shadow-out: 4px 6px 16px var(--shadow-dark);
+  --shadow-out-sm: 2px 4px 8px var(--shadow-dark);
+  --shadow-in: inset 2px 4px 8px var(--shadow-dark);
+  --shadow-in-sm: inset 1px 2px 4px var(--shadow-dark);
 }
 
 .dark {
-  --bg-color: #2d3748;
-  --text-color: #e2e8f0;
-  --text-muted: #a0aec0;
-  --shadow-light: #3a475c;
-  --shadow-dark: #202734;
-  --primary: #60a5fa;
-  --primary-hover: #93c5fd;
+  --bg-color: #262626;
+  --text-color: #ffffff;
+  --text-muted: #ffffff;
+  --shadow-light: transparent;
+  --shadow-dark: #000000;
+  --primary: #3b82f6;
+  --primary-hover: #60a5fa;
+  --border-color: #000000;
 }
 
 body {
+  font-family: 'Catamaran', sans-serif;
   background-color: var(--bg-color);
   color: var(--text-color);
   margin: 0;
@@ -35,56 +43,63 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Custom Neomorphism utilities */
+/* Custom Bauhaus utilities */
 .neo-out {
   box-shadow: var(--shadow-out);
   background-color: var(--bg-color);
-  border: none;
+  border: 2px solid var(--text-color);
 }
 
 .neo-out-sm {
   box-shadow: var(--shadow-out-sm);
   background-color: var(--bg-color);
-  border: none;
+  border: 2px solid var(--text-color);
 }
 
 .neo-in {
   box-shadow: var(--shadow-in);
   background-color: var(--bg-color);
-  border: none;
+  border: 2px solid var(--text-color);
 }
 
 .neo-in-sm {
   box-shadow: var(--shadow-in-sm);
   background-color: var(--bg-color);
-  border: none;
+  border: 2px solid var(--text-color);
 }
 
 .neo-btn {
   box-shadow: var(--shadow-out-sm);
-  background-color: var(--bg-color);
-  color: var(--primary);
-  border: none;
-  transition: all 0.2s ease;
+  background-color: var(--primary);
+  color: #ffffff;
+  border: 2px solid var(--text-color);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.dark .neo-btn {
+  color: #ffffff;
 }
 
 .neo-btn:hover {
-  box-shadow: var(--shadow-in-sm);
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px var(--text-color);
 }
 
 .neo-btn:active {
-  box-shadow: var(--shadow-in);
+  transform: translate(4px, 4px);
+  box-shadow: none;
 }
 
 .neo-input {
-  box-shadow: var(--shadow-in-sm);
+  box-shadow: var(--shadow-out-sm);
   background-color: var(--bg-color);
   color: var(--text-color);
-  border: none;
+  border: 2px solid var(--text-color);
   outline: none;
-  transition: all 0.2s ease;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
 .neo-input:focus {
-  box-shadow: var(--shadow-in);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-out);
 }

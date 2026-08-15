@@ -1,3 +1,4 @@
+import { Check } from 'lucide-react';
 import { ProgressStep } from '../types';
 
 interface ProgressBarProps {
@@ -35,7 +36,7 @@ export function ProgressBar({ step }: ProgressBarProps) {
           <div key={s.key} className={`progress-step ${status}`}>
             <div className="step-indicator">
               {status === 'complete' ? (
-                <span className="checkmark">✓</span>
+                <span className="checkmark"><Check size={14} className='inline' /></span>
               ) : status === 'active' ? (
                 <span className="spinner" />
               ) : (
