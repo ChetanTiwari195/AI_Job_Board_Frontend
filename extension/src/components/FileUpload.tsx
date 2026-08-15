@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { loadResumes, loadResume } from '../services/api';
+import { loadResumes, loadResume, loadTemplates, uploadPdfResume } from '../services/api';
 
 interface FileUploadProps {
   onContent: (content: string, resumeId?: string) => void;
@@ -12,24 +12,56 @@ interface SavedResume {
   updated_at: string;
 }
 
+interface Template {
+  id: number;
+  name: string;
+  description: string;
+}
+
 export function FileUpload({ onContent, content }: FileUploadProps) {
   const [mode, setMode] = useState<'upload' | 'paste' | 'saved'>('upload');
   const [savedResumes, setSavedResumes] = useState<SavedResume[]>([]);
+  const [templates, setTemplates] = useState<Template[]>([]);
+  const [selectedTemplate, setSelectedTemplate] = useState<number | ''>('');
   const [fileName, setFileName] = useState('');
+  const [uploadingPdf, setUploadingPdf] = useState(false);
 
   useEffect(() => {
     if (mode === 'saved') {
       loadResumes().then(setSavedResumes).catch(console.error);
+    } else if (mode === 'upload') {
+      loadTemplates().then(t => {
+        setTemplates(t);
+        if (t.length > 0) setSelectedTemplate(t[0].id);
+      }).catch(console.error);
     }
   }, [mode]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setFileName(file.name);
-    const reader = new FileReader();
-    reader.onload = () => onContent(reader.result as string);
-    reader.readAsText(file);
+    
+    if (file.name.toLowerCase().endsWith('.pdf')) {
+      if (!selectedTemplate) {
+        alert("Please select a template first.");
+        return;
+      }
+      try {
+        setUploadingPdf(true);
+        const result = await uploadPdfResume(file, selectedTemplate as number);
+        onContent(result.updated_tex);
+      } catch (err) {
+         console.error(err);
+         alert("Failed to upload PDF");
+      } finally {
+        setUploadingPdf(false);
+      }
+    } else {
+      const reader = new FileReader();
+      reader.onload = () => onContent(reader.result as string);
+      reader.readAsText(file);
+    }
   };
 
   const handleLoadSaved = async (id: string, name: string) => {
@@ -44,7 +76,7 @@ export function FileUpload({ onContent, content }: FileUploadProps) {
 
   return (
     <div className="section">
-      <label className="section-label">Resume (.tex)</label>
+      <label className="section-label">Resume (.tex or .pdf)</label>
       <div className="input-mode-tabs">
         <button
           className={mode === 'upload' ? 'tab active' : 'tab'}
@@ -67,9 +99,22 @@ export function FileUpload({ onContent, content }: FileUploadProps) {
       </div>
 
       {mode === 'upload' && (
-        <div className="upload-area">
-          <input type="file" accept=".tex" onChange={handleFileChange} id="tex-upload" />
-          {fileName && <span className="file-name">📄 {fileName}</span>}
+        <div className="upload-area" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div>
+            <label style={{ fontSize: '12px', display: 'block', marginBottom: '4px' }}>Select Template (for PDF uploads):</label>
+            <select 
+              value={selectedTemplate} 
+              onChange={(e) => setSelectedTemplate(Number(e.target.value))}
+              style={{ width: '100%', padding: '4px' }}
+            >
+              {templates.map(t => (
+                <option key={t.id} value={t.id}>{t.name}</option>
+              ))}
+            </select>
+          </div>
+          <input type="file" accept=".tex,.pdf" onChange={handleFileChange} id="file-upload" disabled={uploadingPdf} />
+          {uploadingPdf && <span className="muted">Parsing PDF and generating template...</span>}
+          {fileName && !uploadingPdf && <span className="file-name">📄 {fileName}</span>}
         </div>
       )}
 
@@ -102,7 +147,7 @@ export function FileUpload({ onContent, content }: FileUploadProps) {
         </div>
       )}
 
-      {content && (
+      {content && !uploadingPdf && (
         <p className="success">✓ Resume loaded ({content.length.toLocaleString()} chars)</p>
       )}
     </div>

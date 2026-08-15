@@ -91,6 +91,33 @@ export async function deleteResume(id: string) {
   return res.json();
 }
 
+export async function loadTemplates() {
+  const res = await fetch(`${API_URL}/resumes/templates`, {
+    headers: getAuthHeaders(),
+  });
+  if (!res.ok) throw new Error('Failed to load templates');
+  return res.json();
+}
+
+export async function uploadPdfResume(file: File, templateId: number) {
+  const formData = new FormData();
+  formData.append('resume', file);
+  formData.append('template_id', templateId.toString());
+
+  const res = await fetch(`${API_URL}/resumes/upload-pdf`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({ detail: 'Unknown error' }));
+    throw new Error(error.detail || `Server error: ${res.status}`);
+  }
+
+  return res.json();
+}
+
 // --- ATS Analysis (lightweight keyword comparison) ---
 
 export async function analyzeResume(
@@ -135,8 +162,8 @@ export async function optimizeResume(
 
   const response = await fetch(`${API_URL}/resumes/optimize`, {
     method: 'POST',
+    headers: getAuthHeaders(),
     body: formData,
-    // Note: optimization might not require auth, but if it does, add getAuthHeaders() here
   });
 
   if (!response.ok) {
