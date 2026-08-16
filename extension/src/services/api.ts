@@ -22,7 +22,7 @@ export async function signUp(email: string, password: string) {
     throw new Error(error.detail || `Server error: ${res.status}`);
   }
   const data = await res.json();
-  localStorage.setItem('access_token', data.access_token);
+  // OTP token is returned for email verification, don't set access_token here
   return data;
 }
 
@@ -36,6 +36,21 @@ export async function signIn(email: string, password: string) {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: params,
+  });
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({ detail: 'Unknown error' }));
+    throw new Error(error.detail || `Server error: ${res.status}`);
+  }
+  const data = await res.json();
+  localStorage.setItem('access_token', data.access_token);
+  return data;
+}
+
+export async function verifyOtp(otpToken: string, otpCode: string) {
+  const res = await fetch(`${API_URL}/auth/verify-otp`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ otp_token: otpToken, otp_code: otpCode }),
   });
   if (!res.ok) {
     const error = await res.json().catch(() => ({ detail: 'Unknown error' }));
