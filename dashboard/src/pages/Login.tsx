@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Briefcase, ArrowRight, ShieldCheck, AlertCircle, CheckCircle2 } from "lucide-react";
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [otp, setOtp] = useState("");
@@ -20,6 +22,7 @@ export const Login: React.FC = () => {
     e.preventDefault();
     setError("");
     setMessage("");
+    setSubmitting(true);
 
     try {
       const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? "https://ai-job-board-backend-6s14.onrender.com/api" : "http://localhost:8002/api");
@@ -48,7 +51,7 @@ export const Login: React.FC = () => {
       if (data.require_otp) {
         setOtpToken(data.otp_token);
         setShowOtpInput(true);
-        setMessage(data.message || "Please check your email for the OTP.");
+        setMessage(data.message || "Please check your email for the OTP verification code.");
         return;
       }
 
@@ -56,12 +59,15 @@ export const Login: React.FC = () => {
       navigate("/");
     } catch (err: any) {
       setError(err.message);
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const handleOtpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setSubmitting(true);
 
     try {
       const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? "https://ai-job-board-backend-6s14.onrender.com/api" : "http://localhost:8002/api");
@@ -75,7 +81,7 @@ export const Login: React.FC = () => {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.detail || "Invalid OTP");
+        throw new Error(data.detail || "Invalid verification code");
       }
 
       const data = await res.json();
@@ -83,40 +89,74 @@ export const Login: React.FC = () => {
       navigate("/");
     } catch (err: any) {
       setError(err.message);
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--bg-color)]">
-      <div className="neo-out p-8 w-full max-w-md bg-[var(--bg-color)]">
-        <h2 className="text-2xl font-bold text-center text-[var(--text-color)] mb-6">
-          {showOtpInput ? "Enter Verification Code" : (isLogin ? "Login to AI Job Board" : "Create an Account")}
-        </h2>
-        {error && <p className="text-red-500 mb-4 text-center font-bold">{error}</p>}
-        {message && <p className="text-green-500 mb-4 text-center font-bold">{message}</p>}
+    <div className="min-h-screen flex items-center justify-center p-4 bg-slate-50/70 dark:bg-[#090d16] transition-colors duration-200">
+      <div className="w-full max-w-md bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-xl dark:shadow-slate-950/60 relative overflow-hidden animate-modal-scale">
+        {/* Accent Bar */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-400" />
+        
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="w-12 h-12 rounded-2xl bg-blue-600 text-white mx-auto flex items-center justify-center shadow-md shadow-blue-500/20 mb-4">
+            {showOtpInput ? <ShieldCheck className="w-6 h-6" /> : <Briefcase className="w-6 h-6" />}
+          </div>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
+            {showOtpInput 
+              ? "Security Verification" 
+              : (isLogin ? "Sign in to AI Job Board" : "Create your account")}
+          </h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5">
+            {showOtpInput 
+              ? "Enter the 6-digit code sent to your email" 
+              : (isLogin ? "Welcome back! Enter your details to continue" : "Start discovering AI-matched opportunities")}
+          </p>
+        </div>
+
+        {/* Error / Success Alerts */}
+        {error && (
+          <div className="mb-5 p-3.5 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 rounded-xl flex items-center gap-2.5 text-xs font-medium text-rose-700 dark:text-rose-300 animate-fade-in">
+            <AlertCircle className="w-4 h-4 text-rose-500 flex-shrink-0" />
+            <p>{error}</p>
+          </div>
+        )}
+
+        {message && (
+          <div className="mb-5 p-3.5 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/50 rounded-xl flex items-center gap-2.5 text-xs font-medium text-emerald-700 dark:text-emerald-300 animate-fade-in">
+            <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+            <p>{message}</p>
+          </div>
+        )}
 
         {!showOtpInput ? (
           <>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-bold text-[var(--text-color)] mb-1">
-                  Email
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                  Email address
                 </label>
                 <input
                   type="email"
-                  className="neo-input w-full px-4 py-3"
+                  placeholder="name@example.com"
+                  className="w-full bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
+              
               <div>
-                <label className="block text-sm font-bold text-[var(--text-color)] mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                   Password
                 </label>
                 <input
                   type="password"
-                  className="neo-input w-full px-4 py-3"
+                  placeholder="••••••••"
+                  className="w-full bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -125,44 +165,65 @@ export const Login: React.FC = () => {
 
               <button
                 type="submit"
-                className="neo-btn w-full py-3 px-4 mt-4"
+                disabled={submitting}
+                className="w-full mt-2 inline-flex items-center justify-center gap-2 py-2.5 px-4 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-semibold text-sm rounded-xl shadow-sm hover:shadow transition-all duration-150 disabled:opacity-50 cursor-pointer"
               >
-                {isLogin ? "Login" : "Sign Up"}
+                {submitting ? (
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <span>{isLogin ? "Sign In" : "Create Account"}</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
               </button>
             </form>
 
-            <p className="mt-4 text-center text-sm text-[var(--text-muted)] font-bold">
-              {isLogin ? "Don't have an account? " : "Already have an account? "}
-              <button
-                type="button"
-                onClick={() => setIsLogin(!isLogin)}
-                className="text-[var(--primary)] hover:underline"
-              >
-                {isLogin ? "Sign up" : "Login"}
-              </button>
-            </p>
+            <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800 text-center">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                {isLogin ? "Don't have an account? " : "Already have an account? "}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsLogin(!isLogin);
+                    setError("");
+                    setMessage("");
+                  }}
+                  className="text-blue-600 dark:text-blue-400 font-semibold hover:underline cursor-pointer"
+                >
+                  {isLogin ? "Sign up" : "Sign in"}
+                </button>
+              </p>
+            </div>
           </>
         ) : (
           <form onSubmit={handleOtpSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-bold text-[var(--text-color)] mb-1">
-                6-Digit OTP Code
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5 text-center">
+                Verification Code
               </label>
               <input
                 type="text"
                 maxLength={6}
-                className="neo-input w-full px-4 py-3 text-center tracking-widest text-lg font-bold"
+                placeholder="123456"
+                className="w-full bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-center tracking-widest text-xl font-bold font-mono text-slate-900 dark:text-slate-100 placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
+                autoFocus
                 required
               />
             </div>
             
             <button
               type="submit"
-              className="neo-btn w-full py-3 px-4 mt-4"
+              disabled={submitting || otp.length < 6}
+              className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-semibold text-sm rounded-xl shadow-sm transition-all duration-150 disabled:opacity-50 cursor-pointer"
             >
-              Verify Code
+              {submitting ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto" />
+              ) : (
+                "Verify Code"
+              )}
             </button>
             
             <button
@@ -171,8 +232,9 @@ export const Login: React.FC = () => {
                 setShowOtpInput(false);
                 setOtp("");
                 setMessage("");
+                setError("");
               }}
-              className="w-full bg-transparent border-2 border-[var(--border-color)] text-[var(--text-color)] font-bold py-3 px-4 transition-all hover:bg-[var(--text-color)] hover:text-[var(--bg-color)] mt-2"
+              className="w-full py-2.5 px-4 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-medium rounded-xl transition-colors cursor-pointer"
             >
               Back to Login
             </button>
