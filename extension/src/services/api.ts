@@ -116,10 +116,9 @@ export async function loadTemplates() {
   return res.json();
 }
 
-export async function uploadPdfResume(file: File, templateId: number) {
+export async function uploadPdfResume(file: File) {
   const formData = new FormData();
   formData.append('resume', file);
-  formData.append('template_id', templateId.toString());
 
   const res = await fetch(`${API_URL}/resumes/upload-pdf`, {
     method: 'POST',
