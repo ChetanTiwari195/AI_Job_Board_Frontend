@@ -1,8 +1,10 @@
 import { OptimizeResponse, AnalyzeResponse } from '../types';
 
-export const API_URL = import.meta.env.PROD 
-  ? 'https://ai-job-board-backend-6s14.onrender.com/api' 
-  : 'http://localhost:8002/api';
+export const API_URL = import.meta.env.VITE_API_BASE || (
+  import.meta.env.PROD 
+    ? 'https://ai-job-board-backend-6s14.onrender.com/api' 
+    : 'http://localhost:8002/api'
+);
 
 function getAuthHeaders(): Record<string, string> {
   const token = localStorage.getItem('access_token');
