@@ -29,7 +29,7 @@ export interface UserSettings {
     scraper_interval_hours: number;
 }
 
-const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? "https://ai-job-board-backend-6s14.onrender.com/api" : "http://localhost:8002/api");
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8002/api";
 
 const getHeaders = () => {
     const token = localStorage.getItem('token');
