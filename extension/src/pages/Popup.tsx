@@ -1,4 +1,4 @@
-import { Moon, Sun, Save, Search, Zap } from 'lucide-react';
+import { Moon, Sun, Save, Search, Zap, LogOut } from 'lucide-react';
 import { useState } from 'react';
 import { FileUpload } from '../components/FileUpload';
 import { JobDescription } from '../components/JobDescription';
@@ -7,7 +7,6 @@ import { Results } from '../components/Results';
 import { KeywordSelector } from '../components/KeywordSelector';
 import { analyzeResume, optimizeResume, saveResume, signOut } from '../services/api';
 import { AnalyzeResponse, OptimizeResponse, ProgressStep } from '../types';
-import { LogOut } from 'lucide-react';
 
 interface PopupProps {
   theme: 'light' | 'dark';
@@ -24,6 +23,8 @@ export function Popup({ theme, toggleTheme }: PopupProps) {
   const [error, setError] = useState('');
   // Track the loaded resume's ID for cached keyword lookup
   const [loadedResumeId, setLoadedResumeId] = useState<string | undefined>(undefined);
+  const [savingResume, setSavingResume] = useState(false);
+  const [isResumeLoading, setIsResumeLoading] = useState(false);
 
   // --- Step 1: Analyze (lightweight) ---
   const handleAnalyze = async () => {
@@ -94,11 +95,14 @@ export function Popup({ theme, toggleTheme }: PopupProps) {
     const name = prompt('Resume name:');
     if (!name) return;
     try {
+      setSavingResume(true);
       const saved = await saveResume(name, resumeContent);
       setLoadedResumeId(saved.id);
       alert('Resume saved!');
     } catch (err: any) {
       alert('Failed to save: ' + err.message);
+    } finally {
+      setSavingResume(false);
     }
   };
 
@@ -160,11 +164,19 @@ export function Popup({ theme, toggleTheme }: PopupProps) {
         </div>
       </header>
 
-      <FileUpload onContent={handleResumeContent} content={resumeContent} />
+      <FileUpload
+        onContent={handleResumeContent}
+        content={resumeContent}
+        onLoadingChange={setIsResumeLoading}
+      />
 
       {resumeContent && (
-        <button className="btn-secondary" onClick={handleSaveResume}>
-          <Save size={16} className="inline mr-1" /> Save Resume to Cloud
+        <button className="btn-secondary" onClick={handleSaveResume} disabled={savingResume || isResumeLoading}>
+          {savingResume ? (
+            <><span className="spinner" style={{ width: '13px', height: '13px', marginRight: '6px' }} /> Saving Resume...</>
+          ) : (
+            <><Save size={16} className="inline mr-1" /> Save Resume to Cloud</>
+          )}
         </button>
       )}
 
@@ -180,9 +192,13 @@ export function Popup({ theme, toggleTheme }: PopupProps) {
       <button
         className="btn-primary btn-analyze"
         onClick={handleAnalyze}
-        disabled={isProcessing}
+        disabled={isProcessing || isResumeLoading}
       >
-        {isAnalyzing ? 'Analyzing...' : <><Search size={16} className="inline mr-1" /> Get ATS Score & Keywords</>}
+        {isAnalyzing ? (
+          <><span className="spinner" style={{ width: '14px', height: '14px', marginRight: '6px', borderColor: '#fff', borderTopColor: 'transparent' }} /> Analyzing Resume...</>
+        ) : (
+          <><Search size={16} className="inline mr-1" /> Get ATS Score & Keywords</>
+        )}
       </button>
 
       {error && <p className="error">{error}</p>}
@@ -210,7 +226,7 @@ export function Popup({ theme, toggleTheme }: PopupProps) {
           title={selectedKeywords.size === 0 ? 'Select keywords to optimize' : ''}
         >
           {isOptimizing
-            ? 'Processing...'
+            ? <><span className="spinner" style={{ width: '14px', height: '14px', marginRight: '6px', borderColor: '#fff', borderTopColor: 'transparent' }} /> Optimizing Resume...</>
             : <><Zap size={16} className="inline mr-1" /> Optimize with {selectedKeywords.size} Selected Keywords</>}
         </button>
       )}
