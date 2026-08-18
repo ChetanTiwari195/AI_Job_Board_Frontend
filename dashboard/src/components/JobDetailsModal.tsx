@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Job } from '../services/api';
 import { X, ExternalLink, Bookmark, BookmarkCheck, Sparkles, Building, MapPin } from 'lucide-react';
+import { Button } from './ui';
 
 interface JobDetailsModalProps {
     job: Job;
@@ -48,7 +49,7 @@ export const JobDetailsModal: React.FC<JobDetailsModalProps> = ({ job, onClose, 
                     <button 
                         onClick={onClose} 
                         aria-label="Close modal"
-                        className="p-2 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex-shrink-0"
+                        className="p-2 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex-shrink-0 cursor-pointer"
                     >
                         <X className="w-5 h-5" />
                     </button>
@@ -98,25 +99,20 @@ export const JobDetailsModal: React.FC<JobDetailsModalProps> = ({ job, onClose, 
                 
                 {/* Footer Actions */}
                 <div className="p-4 sm:px-6 sm:py-4 border-t border-slate-100 dark:border-slate-800/80 flex justify-between items-center bg-slate-50 dark:bg-[#0c1220]">
-                    <button 
+                    <Button 
+                        variant="secondary"
                         onClick={() => onSave(job.id, job.saved)}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 rounded-lg text-sm font-medium transition-colors cursor-pointer"
+                        icon={job.saved ? <BookmarkCheck className="w-4 h-4 text-blue-600 dark:text-blue-400" /> : <Bookmark className="w-4 h-4" />}
                     >
-                        {job.saved ? (
-                            <BookmarkCheck className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                        ) : (
-                            <Bookmark className="w-4 h-4" />
-                        )}
-                        <span>{job.saved ? 'Saved' : 'Save Job'}</span>
-                    </button>
+                        {job.saved ? 'Saved' : 'Save Job'}
+                    </Button>
                     
-                    <button 
+                    <Button 
                         onClick={() => onApply(job.apply_url, job.id)}
-                        className="inline-flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white rounded-lg text-sm font-medium shadow-sm hover:shadow transition-all duration-150 cursor-pointer"
+                        icon={<ExternalLink className="w-4 h-4" />}
                     >
-                        <span>Apply on {job.source || 'Website'}</span>
-                        <ExternalLink className="w-4 h-4" />
-                    </button>
+                        Apply on {job.source || 'Website'}
+                    </Button>
                 </div>
             </div>
         </div>
