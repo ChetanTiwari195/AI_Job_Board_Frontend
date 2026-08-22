@@ -24,6 +24,7 @@ import { SavedJobs } from "./pages/SavedJobs";
 import { Settings } from "./pages/Settings";
 import { Login } from "./pages/Login";
 import { ResumeMatches } from "./pages/ResumeMatches";
+import { Landing } from "./pages/Landing";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -74,7 +75,7 @@ const Sidebar: React.FC = () => {
 
   const navItems = [
     {
-      path: "/",
+      path: "/dashboard",
       label: "Dashboard",
       icon: <LayoutDashboard className="w-4 h-4" />,
     },
@@ -158,7 +159,7 @@ const MobileNav: React.FC = () => {
   const location = useLocation();
 
   const navItems = [
-    { path: "/", icon: <LayoutDashboard className="w-5 h-5" />, label: "Jobs" },
+    { path: "/dashboard", icon: <LayoutDashboard className="w-5 h-5" />, label: "Jobs" },
     { path: "/matches", icon: <Star className="w-5 h-5" />, label: "Matches" },
     { path: "/resumes", icon: <FileText className="w-5 h-5" />, label: "Resumes" },
     { path: "/saved", icon: <Bookmark className="w-5 h-5" />, label: "Saved" },
@@ -208,9 +209,10 @@ const App: React.FC = () => {
       <ThemeToggle />
       <Router>
         <Routes>
+          <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route
-            path="/"
+            path="/dashboard"
             element={
               <PrivateRoute>
                 <DashboardLayout>
