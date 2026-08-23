@@ -1,187 +1,168 @@
 import React from "react";
 import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-  useLocation,
-  Navigate,
+  BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate,
 } from "react-router-dom";
 import {
-  LayoutDashboard,
-  Bookmark,
-  Settings as SettingsIcon,
-  FileText,
-  Star,
-  Moon,
-  Sun,
-  LogOut,
-  Briefcase,
+  LayoutDashboard, Bookmark, Settings as SettingsIcon, FileText,
+  Star, Moon, Sun, LogOut, Briefcase,
 } from "lucide-react";
-import { Dashboard } from "./pages/Dashboard";
-import { Resumes } from "./pages/Resumes";
-import { SavedJobs } from "./pages/SavedJobs";
-import { Settings } from "./pages/Settings";
-import { Login } from "./pages/Login";
+import { Dashboard }     from "./pages/Dashboard";
+import { Resumes }       from "./pages/Resumes";
+import { SavedJobs }     from "./pages/SavedJobs";
+import { Settings }      from "./pages/Settings";
+import { Login }         from "./pages/Login";
 import { ResumeMatches } from "./pages/ResumeMatches";
-import { Landing } from "./pages/Landing";
+import { Landing }       from "./pages/Landing";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
+// ── Auth guard ─────────────────────────────────────────────────────────────
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { token } = useAuth();
   return token ? <>{children}</> : <Navigate to="/login" />;
 };
 
+// ── Global theme toggle (dashboard only) ───────────────────────────────────
 const ThemeToggle: React.FC = () => {
-  const [theme, setTheme] = React.useState<'light' | 'dark'>('light');
-
-  React.useEffect(() => {
-    // Check initial system or local preference
-    const isDark = document.documentElement.classList.contains('dark') ||
-      window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (isDark) {
-      setTheme('dark');
-      document.documentElement.classList.add('dark');
-    }
-  }, []);
+  const [dark, setDark] = React.useState(() =>
+    document.documentElement.classList.contains("dark") ||
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
 
   const toggle = () => {
-    setTheme((curr) => {
-      const next = curr === 'light' ? 'dark' : 'light';
-      document.documentElement.classList.toggle('dark', next === 'dark');
-      return next;
-    });
+    const next = !dark;
+    document.documentElement.classList.toggle("dark", next);
+    setDark(next);
   };
 
   return (
     <button
       onClick={toggle}
-      title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
-      aria-label="Toggle theme"
-      className="fixed top-4 right-4 z-50 p-2.5 rounded-full backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-200 text-slate-600 dark:text-slate-300 cursor-pointer"
+      aria-label={`Switch to ${dark ? "light" : "dark"} mode`}
+      title={`Switch to ${dark ? "light" : "dark"} mode`}
+      style={{
+        display: "flex", alignItems: "center", justifyContent: "center",
+        width: 32, height: 32, borderRadius: 9999,
+        background: "var(--bg-surface)",
+        border: "1px solid var(--border-subtle)",
+        cursor: "pointer",
+        color: "var(--text-muted)",
+        transition: "background 0.15s ease, color 0.15s ease",
+        touchAction: "manipulation",
+        flexShrink: 0,
+      }}
+      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "var(--text-muted)"; }}
     >
-      {theme === 'light' ? (
-        <Moon className="w-4 h-4 transition-transform duration-300 hover:-rotate-12" />
-      ) : (
-        <Sun className="w-4 h-4 transition-transform duration-300 hover:rotate-45 text-amber-400" />
-      )}
+      {dark ? <Sun size={14} /> : <Moon size={14} />}
     </button>
   );
 };
 
-const Sidebar: React.FC = () => {
-  const location = useLocation();
-  const { logout } = useAuth();
+// ── Sidebar ────────────────────────────────────────────────────────────────
+const NAV = [
+  { path: "/dashboard", label: "Job Feed",       icon: LayoutDashboard },
+  { path: "/matches",   label: "Resume Matches", icon: Star },
+  { path: "/resumes",   label: "My Resumes",     icon: FileText },
+  { path: "/saved",     label: "Saved Jobs",     icon: Bookmark },
+  { path: "/settings",  label: "Settings",       icon: SettingsIcon },
+];
 
-  const navItems = [
-    {
-      path: "/dashboard",
-      label: "Dashboard",
-      icon: <LayoutDashboard className="w-4 h-4" />,
-    },
-    {
-      path: "/matches",
-      label: "Resume Matches",
-      icon: <Star className="w-4 h-4" />,
-    },
-    {
-      path: "/resumes",
-      label: "My Resumes",
-      icon: <FileText className="w-4 h-4" />,
-    },
-    {
-      path: "/saved",
-      label: "Saved Jobs",
-      icon: <Bookmark className="w-4 h-4" />,
-    },
-    {
-      path: "/settings",
-      label: "Settings",
-      icon: <SettingsIcon className="w-4 h-4" />,
-    },
-  ];
+const Sidebar: React.FC = () => {
+  const { pathname } = useLocation();
+  const { logout }   = useAuth();
 
   return (
-    <aside className="w-64 h-screen hidden md:flex flex-col justify-between fixed left-0 top-0 bg-white dark:bg-[#0e1526] border-r border-slate-200 dark:border-slate-800/80 z-30 transition-colors duration-200">
+    <aside style={{
+      width: 240, height: "100vh", position: "fixed", left: 0, top: 0,
+      display: "flex", flexDirection: "column", justifyContent: "space-between",
+      background: "var(--sidebar-bg)",
+      borderRight: "1px solid var(--sidebar-border)",
+      zIndex: 30,
+      transition: "background 0.2s ease, border-color 0.2s ease",
+    }}>
+      {/* Brand */}
       <div>
-        {/* Brand Header */}
-        <div className="p-6 flex items-center gap-3 border-b border-slate-100 dark:border-slate-800/60">
-          <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-sm shadow-blue-500/20">
-            <Briefcase className="w-5 h-5" />
+        <div style={{ padding: "20px 20px 16px", borderBottom: "1px solid var(--sidebar-border)", display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 34, height: 34, borderRadius: 9, background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 8px rgba(37,99,235,0.2)", flexShrink: 0 }}>
+            <Briefcase size={16} color="white" />
           </div>
           <div>
-            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 tracking-tight leading-none">
-              AI Job Board
-            </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Smart Career Match</p>
+            <div style={{ fontSize: 14, fontWeight: 400, color: "var(--text-primary)", letterSpacing: "-0.2px", lineHeight: 1 }}>AI Job Board</div>
+            <div style={{ fontSize: 11, fontWeight: 300, color: "var(--text-muted)", marginTop: 2 }}>Smart Career Match</div>
           </div>
         </div>
 
-        {/* Navigation Items */}
-        <nav className="p-4 space-y-1.5">
-          {navItems.map((item) => {
-            const isActive = location.pathname === item.path;
+        {/* Nav items */}
+        <nav style={{ padding: "12px 12px 0" }} aria-label="Dashboard navigation">
+          {NAV.map(({ path, label, icon: Icon }) => {
+            const active = pathname === path;
             return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
-                  isActive
-                    ? "bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 font-semibold shadow-xs"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/70 dark:hover:bg-slate-800/50"
-                }`}
+              <Link key={path} to={path} style={{
+                display: "flex", alignItems: "center", gap: 10,
+                padding: "9px 12px", borderRadius: 8, marginBottom: 2,
+                textDecoration: "none", fontSize: 14, fontWeight: active ? 400 : 300,
+                color: active ? "var(--sidebar-active-text)" : "var(--sidebar-text)",
+                background: active ? "var(--sidebar-active-bg)" : "transparent",
+                transition: "background 0.12s ease, color 0.12s ease",
+              }}
+                onMouseEnter={e => { if (!active) (e.currentTarget as HTMLElement).style.background = "var(--sidebar-hover-bg)"; }}
+                onMouseLeave={e => { if (!active) (e.currentTarget as HTMLElement).style.background = "transparent"; }}
               >
-                <span className={isActive ? "text-blue-600 dark:text-blue-400" : "text-slate-500 dark:text-slate-400"}>
-                  {item.icon}
-                </span>
-                <span>{item.label}</span>
+                <Icon size={16} strokeWidth={active ? 1.75 : 1.5} />
+                {label}
+                {active && <span style={{ marginLeft: "auto", width: 5, height: 5, borderRadius: "50%", background: "var(--primary)", opacity: 0.8 }} />}
               </Link>
             );
           })}
         </nav>
       </div>
 
-      {/* Footer / Logout */}
-      <div className="p-4 border-t border-slate-100 dark:border-slate-800/60">
-        <button
-          onClick={logout}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all duration-150 cursor-pointer"
+      {/* Footer */}
+      <div style={{ padding: "12px 12px 20px", borderTop: "1px solid var(--sidebar-border)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 12px", marginBottom: 6 }}>
+          <ThemeToggle />
+        </div>
+        <button onClick={logout} style={{
+          width: "100%", display: "flex", alignItems: "center", gap: 10,
+          padding: "9px 12px", borderRadius: 8, border: "none", cursor: "pointer",
+          background: "transparent", fontSize: 14, fontWeight: 300, color: "var(--text-muted)",
+          transition: "background 0.12s ease, color 0.12s ease",
+        }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(239,68,68,0.06)"; (e.currentTarget as HTMLElement).style.color = "#ef4444"; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "var(--text-muted)"; }}
         >
-          <LogOut className="w-4 h-4" />
-          <span>Sign Out</span>
+          <LogOut size={16} strokeWidth={1.5} />
+          Sign out
         </button>
       </div>
     </aside>
   );
 };
 
+// ── Mobile bottom nav ──────────────────────────────────────────────────────
 const MobileNav: React.FC = () => {
-  const location = useLocation();
-
-  const navItems = [
-    { path: "/dashboard", icon: <LayoutDashboard className="w-5 h-5" />, label: "Jobs" },
-    { path: "/matches", icon: <Star className="w-5 h-5" />, label: "Matches" },
-    { path: "/resumes", icon: <FileText className="w-5 h-5" />, label: "Resumes" },
-    { path: "/saved", icon: <Bookmark className="w-5 h-5" />, label: "Saved" },
-    { path: "/settings", icon: <SettingsIcon className="w-5 h-5" />, label: "Settings" },
-  ];
-
+  const { pathname } = useLocation();
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 backdrop-blur-lg bg-white/90 dark:bg-slate-950/90 border-t border-slate-200 dark:border-slate-800 flex justify-around items-center p-2 z-40">
-      {navItems.map((item) => {
-        const isActive = location.pathname === item.path;
+    <nav aria-label="Mobile navigation" style={{
+      display: "flex", position: "fixed", bottom: 0, left: 0, right: 0,
+      background: "color-mix(in srgb, var(--sidebar-bg) 95%, transparent)",
+      backdropFilter: "blur(12px)",
+      borderTop: "1px solid var(--sidebar-border)",
+      justifyContent: "space-around", alignItems: "center",
+      padding: "8px 4px", zIndex: 40,
+    }}>
+      {NAV.slice(0, 5).map(({ path, label, icon: Icon }) => {
+        const active = pathname === path;
         return (
-          <Link
-            key={item.path}
-            to={item.path}
-            aria-label={item.label}
-            className={`p-2.5 rounded-xl flex flex-col items-center gap-1 transition-all duration-150 ${
-              isActive
-                ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50"
-                : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
-            }`}
-          >
-            {item.icon}
+          <Link key={path} to={path} aria-label={label} style={{
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
+            padding: "8px 12px", borderRadius: 10, textDecoration: "none",
+            color: active ? "var(--primary)" : "var(--text-muted)",
+            background: active ? "rgba(37,99,235,0.06)" : "transparent",
+            transition: "all 0.15s ease",
+          }}>
+            <Icon size={20} strokeWidth={active ? 1.75 : 1.5} />
+            <span style={{ fontSize: 10, fontWeight: active ? 400 : 300 }}>{label.split(" ")[0]}</span>
           </Link>
         );
       })}
@@ -189,82 +170,58 @@ const MobileNav: React.FC = () => {
   );
 };
 
-const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return (
-    <div className="min-h-screen flex bg-slate-50/50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 transition-colors duration-200">
-      <Sidebar />
-      <main className="flex-1 md:ml-64 mb-16 md:mb-0">
-        <div className="animate-fade-in">
-          {children}
-        </div>
-      </main>
+// ── Responsive sidebar styles ─────────────────────────────────────────────
+const SIDEBAR_MEDIA_STYLE = `
+  .sidebar-desktop { display: none; }
+  .mobile-nav { display: flex; }
+  .main-pb { padding-bottom: 64px; }
+  @media (min-width: 768px) {
+    .sidebar-desktop { display: block; }
+    .mobile-nav { display: none; }
+    .main-pb { padding-bottom: 0; }
+  }
+`;
+
+// ── Dashboard layout ───────────────────────────────────────────────────────
+const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <div style={{ minHeight: "100vh", display: "flex", background: "var(--bg-app)", color: "var(--text-primary)", transition: "background 0.2s ease, color 0.2s ease" }}>
+    <style>{SIDEBAR_MEDIA_STYLE}</style>
+    <div className="sidebar-desktop"><Sidebar /></div>
+    <div className="sidebar-desktop" style={{ width: 240, flexShrink: 0 }} />
+
+    <main className="main-pb" style={{ flex: 1, minWidth: 0 }}>
+      <div className="animate-fade-in">{children}</div>
+    </main>
+
+    <div className="mobile-nav" style={{ bottom: 0, left: 0, right: 0, position: "fixed" }}>
       <MobileNav />
     </div>
-  );
-};
+  </div>
+);
 
-const App: React.FC = () => {
-  return (
-    <AuthProvider>
-      <ThemeToggle />
-      <Router>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <DashboardLayout>
-                  <Dashboard />
-                </DashboardLayout>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/matches"
-            element={
-              <PrivateRoute>
-                <DashboardLayout>
-                  <ResumeMatches />
-                </DashboardLayout>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/resumes"
-            element={
-              <PrivateRoute>
-                <DashboardLayout>
-                  <Resumes />
-                </DashboardLayout>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/saved"
-            element={
-              <PrivateRoute>
-                <DashboardLayout>
-                  <SavedJobs />
-                </DashboardLayout>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <PrivateRoute>
-                <DashboardLayout>
-                  <Settings />
-                </DashboardLayout>
-              </PrivateRoute>
-            }
-          />
-        </Routes>
-      </Router>
-    </AuthProvider>
-  );
-};
+// ── App ─────────────────────────────────────────────────────────────────────
+const App: React.FC = () => (
+  <AuthProvider>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
+        {[
+          { path: "/dashboard", el: <Dashboard /> },
+          { path: "/matches",   el: <ResumeMatches /> },
+          { path: "/resumes",   el: <Resumes /> },
+          { path: "/saved",     el: <SavedJobs /> },
+          { path: "/settings",  el: <Settings /> },
+        ].map(({ path, el }) => (
+          <Route key={path} path={path} element={
+            <PrivateRoute>
+              <DashboardLayout>{el}</DashboardLayout>
+            </PrivateRoute>
+          } />
+        ))}
+      </Routes>
+    </Router>
+  </AuthProvider>
+);
 
 export default App;
