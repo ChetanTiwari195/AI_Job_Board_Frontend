@@ -28,161 +28,130 @@ import { Landing } from "./pages/Landing";
 import { PrivacyPolicy } from "./pages/PrivacyPolicy";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
+// ── Auth guard ─────────────────────────────────────────────────────────────
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { token } = useAuth();
   return token ? <>{children}</> : <Navigate to="/login" />;
 };
 
+// ── Global theme toggle (dashboard only) ───────────────────────────────────
 const ThemeToggle: React.FC = () => {
-  const [theme, setTheme] = React.useState<'light' | 'dark'>('light');
-
-  React.useEffect(() => {
-    // Check initial system or local preference
-    const isDark = document.documentElement.classList.contains('dark') ||
-      window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (isDark) {
-      setTheme('dark');
-      document.documentElement.classList.add('dark');
-    }
-  }, []);
+  const [dark, setDark] = React.useState(
+    () =>
+      document.documentElement.classList.contains("dark") ||
+      window.matchMedia("(prefers-color-scheme: dark)").matches,
+  );
 
   const toggle = () => {
-    setTheme((curr) => {
-      const next = curr === 'light' ? 'dark' : 'light';
-      document.documentElement.classList.toggle('dark', next === 'dark');
-      return next;
-    });
+    const next = !dark;
+    document.documentElement.classList.toggle("dark", next);
+    setDark(next);
   };
 
   return (
     <button
       onClick={toggle}
-      title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
-      aria-label="Toggle theme"
-      className="fixed top-4 right-4 z-50 p-2.5 rounded-full backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-200 text-slate-600 dark:text-slate-300 cursor-pointer"
+      aria-label={`Switch to ${dark ? "light" : "dark"} mode`}
+      title={`Switch to ${dark ? "light" : "dark"} mode`}
+      className="flex items-center justify-center w-8 h-8 rounded-full bg-(--bg-surface) border `border-(--border-subtle) cursor-pointer text-(--text-muted) hover:text-(--text-primary) transition-colors duration-150 shrink-0"
     >
-      {theme === 'light' ? (
-        <Moon className="w-4 h-4 transition-transform duration-300 hover:-rotate-12" />
-      ) : (
-        <Sun className="w-4 h-4 transition-transform duration-300 hover:rotate-45 text-amber-400" />
-      )}
+      {dark ? <Sun size={14} /> : <Moon size={14} />}
     </button>
   );
 };
 
+// ── Sidebar ────────────────────────────────────────────────────────────────
+const NAV = [
+  { path: "/dashboard", label: "Job Feed", icon: LayoutDashboard },
+  { path: "/matches", label: "Resume Matches", icon: Star },
+  { path: "/resumes", label: "My Resumes", icon: FileText },
+  { path: "/saved", label: "Saved Jobs", icon: Bookmark },
+  { path: "/settings", label: "Settings", icon: SettingsIcon },
+];
+
 const Sidebar: React.FC = () => {
-  const location = useLocation();
+  const { pathname } = useLocation();
   const { logout } = useAuth();
 
-  const navItems = [
-    {
-      path: "/dashboard",
-      label: "Dashboard",
-      icon: <LayoutDashboard className="w-4 h-4" />,
-    },
-    {
-      path: "/matches",
-      label: "Resume Matches",
-      icon: <Star className="w-4 h-4" />,
-    },
-    {
-      path: "/resumes",
-      label: "My Resumes",
-      icon: <FileText className="w-4 h-4" />,
-    },
-    {
-      path: "/saved",
-      label: "Saved Jobs",
-      icon: <Bookmark className="w-4 h-4" />,
-    },
-    {
-      path: "/settings",
-      label: "Settings",
-      icon: <SettingsIcon className="w-4 h-4" />,
-    },
-  ];
-
   return (
-    <aside className="w-64 h-screen hidden md:flex flex-col justify-between fixed left-0 top-0 bg-white dark:bg-[#0e1526] border-r border-slate-200 dark:border-slate-800/80 z-30 transition-colors duration-200">
+    <aside className="w-60 h-screen fixed left-0 top-0 flex flex-col justify-between bg-[var(--sidebar-bg)] border-r border-[var(--sidebar-border)] z-30 transition-colors duration-200">
+      {/* Brand */}
       <div>
-        {/* Brand Header */}
-        <div className="p-6 flex items-center gap-3 border-b border-slate-100 dark:border-slate-800/60">
-          <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-sm shadow-blue-500/20">
-            <Briefcase className="w-5 h-5" />
+        <div className="px-5 py-4 pb-4 border-b border-[var(--sidebar-border)] flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-[9px] bg-blue-600 flex items-center justify-center shadow-[0_2px_8px_rgba(37,99,235,0.2)] shrink-0">
+            <Briefcase size={16} color="white" />
           </div>
           <div>
-            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 tracking-tight leading-none">
-              AI Job Board
-            </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Smart Career Match</p>
+            <div className="text-sm font-normal text-[var(--text-primary)] tracking-tight leading-none">
+              Linkbay
+            </div>
+            <div className="text-[11px] font-light text-[var(--text-muted)] mt-0.5">
+              Smart Career Match
+            </div>
           </div>
         </div>
 
-        {/* Navigation Items */}
-        <nav className="p-4 space-y-1.5">
-          {navItems.map((item) => {
-            const isActive = location.pathname === item.path;
+        {/* Nav items */}
+        <nav className="p-3 pt-3" aria-label="Dashboard navigation">
+          {NAV.map(({ path, label, icon: Icon }) => {
+            const active = pathname === path;
             return (
               <Link
-                key={item.path}
-                to={item.path}
-                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
-                  isActive
-                    ? "bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 font-semibold shadow-xs"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/70 dark:hover:bg-slate-800/50"
-                }`}
+                key={path}
+                to={path}
+                className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg mb-0.5 no-underline text-sm transition-colors duration-150 ${active ? "font-normal text-[var(--sidebar-active-text)] bg-[var(--sidebar-active-bg)]" : "font-light text-[var(--sidebar-text)] bg-transparent hover:bg-[var(--sidebar-hover-bg)]"}`}
               >
-                <span className={isActive ? "text-blue-600 dark:text-blue-400" : "text-slate-500 dark:text-slate-400"}>
-                  {item.icon}
-                </span>
-                <span>{item.label}</span>
+                <Icon size={16} strokeWidth={active ? 1.75 : 1.5} />
+                {label}
+                {active && (
+                  <span className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-600 opacity-80" />
+                )}
               </Link>
             );
           })}
         </nav>
       </div>
 
-      {/* Footer / Logout */}
-      <div className="p-4 border-t border-slate-100 dark:border-slate-800/60">
+      {/* Footer */}
+      <div className="p-3 pb-5 border-t border-[var(--sidebar-border)]">
+        <div className="flex items-center gap-2 px-3 py-1.5 mb-1.5">
+          <ThemeToggle />
+        </div>
         <button
           onClick={logout}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all duration-150 cursor-pointer"
+          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg border-none cursor-pointer bg-transparent text-sm font-light text-[var(--text-muted)] transition-colors duration-150 hover:bg-red-500/10 hover:text-red-500"
         >
-          <LogOut className="w-4 h-4" />
-          <span>Sign Out</span>
+          <LogOut size={16} strokeWidth={1.5} />
+          Sign out
         </button>
       </div>
     </aside>
   );
 };
 
+// ── Mobile bottom nav ──────────────────────────────────────────────────────
 const MobileNav: React.FC = () => {
-  const location = useLocation();
-
-  const navItems = [
-    { path: "/dashboard", icon: <LayoutDashboard className="w-5 h-5" />, label: "Jobs" },
-    { path: "/matches", icon: <Star className="w-5 h-5" />, label: "Matches" },
-    { path: "/resumes", icon: <FileText className="w-5 h-5" />, label: "Resumes" },
-    { path: "/saved", icon: <Bookmark className="w-5 h-5" />, label: "Saved" },
-    { path: "/settings", icon: <SettingsIcon className="w-5 h-5" />, label: "Settings" },
-  ];
-
+  const { pathname } = useLocation();
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 backdrop-blur-lg bg-white/90 dark:bg-slate-950/90 border-t border-slate-200 dark:border-slate-800 flex justify-around items-center p-2 z-40">
-      {navItems.map((item) => {
-        const isActive = location.pathname === item.path;
+    <nav
+      aria-label="Mobile navigation"
+      className="flex fixed bottom-0 left-0 right-0 bg-[color-mix(in_srgb,var(--sidebar-bg)_95%,transparent)] backdrop-blur-md border-t border-[var(--sidebar-border)] justify-around items-center px-1 py-2 z-40"
+    >
+      {NAV.slice(0, 5).map(({ path, label, icon: Icon }) => {
+        const active = pathname === path;
         return (
           <Link
-            key={item.path}
-            to={item.path}
-            aria-label={item.label}
-            className={`p-2.5 rounded-xl flex flex-col items-center gap-1 transition-all duration-150 ${
-              isActive
-                ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50"
-                : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
-            }`}
+            key={path}
+            to={path}
+            aria-label={label}
+            className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl no-underline transition-all duration-150 ${active ? "text-blue-600 bg-blue-600/10" : "text-[var(--text-muted)] bg-transparent"}`}
           >
-            {item.icon}
+            <Icon size={20} strokeWidth={active ? 1.75 : 1.5} />
+            <span
+              className={`text-[10px] ${active ? "font-normal" : "font-light"}`}
+            >
+              {label.split(" ")[0]}
+            </span>
           </Link>
         );
       })}
@@ -190,83 +159,54 @@ const MobileNav: React.FC = () => {
   );
 };
 
-const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return (
-    <div className="min-h-screen flex bg-slate-50/50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 transition-colors duration-200">
+// ── Dashboard layout ───────────────────────────────────────────────────────
+const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => (
+  <div className="min-h-screen flex bg-[var(--bg-app)] text-[var(--text-primary)] transition-colors duration-200">
+    <div className="hidden md:block">
       <Sidebar />
-      <main className="flex-1 md:ml-64 mb-16 md:mb-0">
-        <div className="animate-fade-in">
-          {children}
-        </div>
-      </main>
+    </div>
+    <div className="hidden md:block w-60 shrink-0" />
+
+    <main className="flex-1 min-w-0 pb-16 md:pb-0">
+      <div className="animate-fade-in">{children}</div>
+    </main>
+
+    <div className="md:hidden">
       <MobileNav />
     </div>
-  );
-};
+  </div>
+);
 
-const App: React.FC = () => {
-  return (
-    <AuthProvider>
-      <ThemeToggle />
-      <Router>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
+// ── App ─────────────────────────────────────────────────────────────────────
+const App: React.FC = () => (
+  <AuthProvider>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        {[
+          { path: "/dashboard", el: <Dashboard /> },
+          { path: "/matches", el: <ResumeMatches /> },
+          { path: "/resumes", el: <Resumes /> },
+          { path: "/saved", el: <SavedJobs /> },
+          { path: "/settings", el: <Settings /> },
+        ].map(({ path, el }) => (
           <Route
-            path="/dashboard"
+            key={path}
+            path={path}
             element={
               <PrivateRoute>
-                <DashboardLayout>
-                  <Dashboard />
-                </DashboardLayout>
+                <DashboardLayout>{el}</DashboardLayout>
               </PrivateRoute>
             }
           />
-          <Route
-            path="/matches"
-            element={
-              <PrivateRoute>
-                <DashboardLayout>
-                  <ResumeMatches />
-                </DashboardLayout>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/resumes"
-            element={
-              <PrivateRoute>
-                <DashboardLayout>
-                  <Resumes />
-                </DashboardLayout>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/saved"
-            element={
-              <PrivateRoute>
-                <DashboardLayout>
-                  <SavedJobs />
-                </DashboardLayout>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <PrivateRoute>
-                <DashboardLayout>
-                  <Settings />
-                </DashboardLayout>
-              </PrivateRoute>
-            }
-          />
-        </Routes>
-      </Router>
-    </AuthProvider>
-  );
-};
+        ))}
+      </Routes>
+    </Router>
+  </AuthProvider>
+);
 
 export default App;

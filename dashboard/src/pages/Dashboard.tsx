@@ -5,208 +5,158 @@ import { JobCard } from '../components/JobCard';
 import { JobDetailsModal } from '../components/JobDetailsModal';
 import { RefreshCw, Search, Briefcase, X } from 'lucide-react';
 
-export const Dashboard: React.FC = () => {
-    const [jobs, setJobs] = useState<Job[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [refreshing, setRefreshing] = useState(false);
-    const [selectedJob, setSelectedJob] = useState<Job | null>(null);
-    const [searchQuery, setSearchQuery] = useState('');
-
-    const fetchJobs = async () => {
-        try {
-            setLoading(true);
-            const data = await getJobs();
-            setJobs(data);
-        } catch (error) {
-            console.error("Failed to fetch jobs", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchJobs();
-    }, []);
-
-    const handleSave = async (id: number, currentlySaved: boolean) => {
-        try {
-            if (currentlySaved) {
-                await unsaveJob(id);
-            } else {
-                await saveJob(id);
-            }
-            setJobs(jobs.map(j => j.id === id ? { ...j, saved: !currentlySaved } : j));
-            if (selectedJob && selectedJob.id === id) {
-                setSelectedJob({ ...selectedJob, saved: !currentlySaved });
-            }
-        } catch (error) {
-            console.error("Failed to toggle save", error);
-        }
-    };
-
-    const handleApply = async (url: string, id: number) => {
-        try {
-            await applyJob(id);
-            window.open(url, '_blank');
-        } catch (error) {
-            console.error("Failed to apply", error);
-        }
-    };
-
-    const handleRefresh = async () => {
-        try {
-            setRefreshing(true);
-            await refreshJobs();
-            setTimeout(() => {
-                fetchJobs();
-                setRefreshing(false);
-            }, 4000);
-        } catch (error) {
-            console.error("Failed to refresh", error);
-            setRefreshing(false);
-        }
-    };
-
-    const filteredJobs = jobs.filter(j => 
-        j.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        j.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (j.location && j.location.toLowerCase().includes(searchQuery.toLowerCase()))
-    );
-
-    return (
-        <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6">
-            {/* Header Section */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-2 border-b border-slate-200/80 dark:border-slate-800/60">
-                <div>
-                    <div className="flex items-center gap-2.5">
-                        <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
-                            Job Feed
-                        </h1>
-                        {!loading && (
-                            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-                                {jobs.length} total
-                            </span>
-                        )}
-                    </div>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                        Explore curated roles matched to your target profile
-                    </p>
-                </div>
-                
-                {/* Search & Actions */}
-                <div className="flex items-center gap-3 w-full md:w-auto">
-                    <div className="relative flex-1 md:w-72">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <input 
-                            type="text" 
-                            placeholder="Filter by title, company..." 
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-lg pl-9 pr-8 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-                        />
-                        {searchQuery && (
-                            <button
-                                onClick={() => setSearchQuery('')}
-                                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                            >
-                                <X className="w-3.5 h-3.5" />
-                            </button>
-                        )}
-                    </div>
-                    
-                    <button 
-                        onClick={handleRefresh}
-                        disabled={refreshing}
-                        className="inline-flex items-center gap-2 px-3.5 py-2 bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-lg text-sm font-medium transition-all shadow-xs hover:shadow-sm disabled:opacity-50 cursor-pointer"
-                    >
-                        <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-blue-500' : ''}`} />
-                        <span>{refreshing ? 'Fetching...' : 'Refresh'}</span>
-                    </button>
-                </div>
-            </div>
-
-            {/* Content Section */}
-            {loading ? (
-                /* Sleek Shimmer Skeleton Grid */
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                    {[...Array(6)].map((_, i) => (
-                        <div 
-                            key={i} 
-                            className="bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-xl p-5 space-y-4"
-                        >
-                            <div className="flex justify-between items-start">
-                                <div className="h-5 skeleton-shimmer rounded-md w-3/4" />
-                                <div className="h-4 skeleton-shimmer rounded-md w-4" />
-                            </div>
-                            <div className="flex gap-2">
-                                <div className="h-4 skeleton-shimmer rounded-md w-20" />
-                                <div className="h-4 skeleton-shimmer rounded-md w-20" />
-                            </div>
-                            <div className="space-y-2">
-                                <div className="h-3 skeleton-shimmer rounded-md w-full" />
-                                <div className="h-3 skeleton-shimmer rounded-md w-5/6" />
-                            </div>
-                            <div className="flex justify-between items-center pt-2">
-                                <div className="h-4 skeleton-shimmer rounded-md w-16" />
-                                <div className="h-7 skeleton-shimmer rounded-md w-20" />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            ) : filteredJobs.length === 0 ? (
-                /* Elegant Empty State */
-                <div className="text-center py-20 bg-white dark:bg-[#111827] rounded-xl border border-dashed border-slate-200 dark:border-slate-800 p-8">
-                    <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 mx-auto flex items-center justify-center mb-3">
-                        <Briefcase className="w-6 h-6" />
-                    </div>
-                    <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
-                        {searchQuery ? "No matching jobs found" : "No jobs in feed"}
-                    </h3>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
-                        {searchQuery 
-                            ? "Try adjusting your search keywords or clear the filter." 
-                            : "Click refresh to scan your configured job boards for new listings."}
-                    </p>
-                    {searchQuery ? (
-                        <button
-                            onClick={() => setSearchQuery('')}
-                            className="mt-4 px-4 py-2 text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline"
-                        >
-                            Clear search query
-                        </button>
-                    ) : (
-                        <button
-                            onClick={handleRefresh}
-                            className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-all"
-                        >
-                            Refresh Sources
-                        </button>
-                    )}
-                </div>
-            ) : (
-                /* Grid of Cards */
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                    {filteredJobs.map(job => (
-                        <JobCard 
-                            key={job.id} 
-                            job={job} 
-                            onClick={() => setSelectedJob(job)} 
-                            onSave={handleSave}
-                            onApply={handleApply}
-                        />
-                    ))}
-                </div>
-            )}
-
-            {/* Details Modal */}
-            {selectedJob && (
-                <JobDetailsModal 
-                    job={selectedJob} 
-                    onClose={() => setSelectedJob(null)}
-                    onSave={handleSave}
-                    onApply={handleApply}
-                />
-            )}
+// ── Stripe-style page header ───────────────────────────────────────────────
+const PageHeader: React.FC<{
+  title: string; subtitle: string; badge?: string;
+  actions?: React.ReactNode;
+}> = ({ title, subtitle, badge, actions }) => (
+  <div className="flex flex-col gap-1 pb-5 border-b border-[var(--border-subtle)] mb-6">
+    <div className="flex items-start justify-between gap-3 flex-wrap">
+      <div>
+        <div className="flex items-center gap-2.5">
+          <h1 className="text-[26px] font-light text-[var(--text-primary)] tracking-tight m-0 [font-feature-settings:'ss01']">{title}</h1>
+          {badge && <span className="pill-tag text-[11px]">{badge}</span>}
         </div>
-    );
+        <p className="text-sm font-light text-[var(--text-muted)] mt-1 mb-0">{subtitle}</p>
+      </div>
+      {actions && <div className="flex items-center gap-2">{actions}</div>}
+    </div>
+  </div>
+);
+
+// ── Skeleton grid ──────────────────────────────────────────────────────────
+const SkeletonGrid: React.FC<{ count?: number }> = ({ count = 6 }) => (
+  <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
+    {[...Array(count)].map((_, i) => (
+      <div key={i} className="card p-5 flex flex-col gap-3">
+        <div className="flex justify-between">
+          <div className="skeleton-shimmer h-[18px] rounded-md w-[70%]" />
+          <div className="skeleton-shimmer h-[18px] w-[18px] rounded-md" />
+        </div>
+        <div className="flex gap-2">
+          <div className="skeleton-shimmer h-3.5 rounded-full w-[72px]" />
+          <div className="skeleton-shimmer h-3.5 rounded-full w-[56px]" />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <div className="skeleton-shimmer h-3 rounded w-full" />
+          <div className="skeleton-shimmer h-3 rounded w-[83%]" />
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+// ── Empty state ────────────────────────────────────────────────────────────
+const EmptyState: React.FC<{
+  icon: React.ReactNode; title: string; body: string; action?: React.ReactNode;
+}> = ({ icon, title, body, action }) => (
+  <div className="card text-center py-16 px-8 border border-dashed border-[var(--border-subtle)]">
+    <div className="w-12 h-12 rounded-full bg-blue-600/10 flex items-center justify-center mx-auto mb-4 text-[var(--primary)]">
+      {icon}
+    </div>
+    <h3 className="text-base font-normal text-[var(--text-primary)] m-0 mb-1.5 [font-feature-settings:'ss01']">{title}</h3>
+    <p className="text-sm font-light text-[var(--text-muted)] max-w-xs mx-auto mb-5 leading-relaxed">{body}</p>
+    {action}
+  </div>
+);
+
+// ── Search input ───────────────────────────────────────────────────────────
+const SearchInput: React.FC<{ value: string; onChange: (v: string) => void; placeholder?: string }> = ({ value, onChange, placeholder = "Filter jobs…" }) => (
+  <div className="relative w-60">
+    <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none" />
+    <input
+      type="text" value={value} onChange={e => onChange(e.target.value)}
+      placeholder={placeholder}
+      className={`w-full pl-8 h-9 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-primary)] text-[13px] font-light outline-none transition-all duration-150 focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.08)] ${value ? 'pr-7' : 'pr-2.5'}`}
+    />
+    {value && (
+      <button onClick={() => onChange("")} className="absolute right-2 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer text-[var(--text-muted)] p-0.5">
+        <X size={12} />
+      </button>
+    )}
+  </div>
+);
+
+// ── Dashboard page ─────────────────────────────────────────────────────────
+export const Dashboard: React.FC = () => {
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const fetchJobs = async () => {
+    try { setLoading(true); setJobs(await getJobs()); }
+    catch (e) { console.error(e); }
+    finally { setLoading(false); }
+  };
+
+  useEffect(() => { fetchJobs(); }, []);
+
+  const handleSave = async (id: number, saved: boolean) => {
+    try {
+      saved ? await unsaveJob(id) : await saveJob(id);
+      setJobs(j => j.map(x => x.id === id ? { ...x, saved: !saved } : x));
+      if (selectedJob?.id === id) setSelectedJob(s => s && { ...s, saved: !saved });
+    } catch (e) { console.error(e); }
+  };
+
+  const handleApply = async (url: string, id: number) => {
+    try { await applyJob(id); window.open(url, '_blank'); }
+    catch (e) { console.error(e); }
+  };
+
+  const handleRefresh = async () => {
+    try {
+      setRefreshing(true);
+      await refreshJobs();
+      setTimeout(() => { fetchJobs(); setRefreshing(false); }, 4000);
+    } catch (e) { console.error(e); setRefreshing(false); }
+  };
+
+  const filtered = jobs.filter(j =>
+    [j.title, j.company, j.location ?? ""].some(s => s.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  return (
+    <div className="py-7 px-8 max-w-[1200px] mx-auto">
+      <PageHeader
+        title="Job Feed"
+        subtitle="Curated roles matched to your target profile"
+        badge={loading ? undefined : `${jobs.length} total`}
+        actions={
+          <>
+            <SearchInput value={searchQuery} onChange={setSearchQuery} placeholder="Filter by title, company…" />
+            <button onClick={handleRefresh} disabled={refreshing} className="btn-ghost h-9 gap-1.5 text-[13px]">
+              <RefreshCw size={13} className={refreshing ? "animate-spin text-blue-600" : ""} />
+              {refreshing ? "Fetching…" : "Refresh"}
+            </button>
+          </>
+        }
+      />
+
+      {loading ? <SkeletonGrid />
+        : filtered.length === 0
+          ? <EmptyState icon={<Briefcase size={22} />}
+              title={searchQuery ? "No matching jobs" : "No jobs in feed"}
+              body={searchQuery ? "Try different keywords or clear the filter." : "Click Refresh to scan your configured job boards."}
+              action={searchQuery
+                ? <button onClick={() => setSearchQuery('')} className="btn-secondary text-[13px]">Clear filter</button>
+                : <button onClick={handleRefresh} className="btn-primary text-[13px]">Refresh Sources</button>
+              }
+            />
+          : (
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
+              {filtered.map(job => (
+                <JobCard key={job.id} job={job} onClick={() => setSelectedJob(job)} onSave={handleSave} onApply={handleApply} />
+              ))}
+            </div>
+          )
+      }
+
+      {selectedJob && (
+        <JobDetailsModal job={selectedJob} onClose={() => setSelectedJob(null)} onSave={handleSave} onApply={handleApply} />
+      )}
+    </div>
+  );
 };

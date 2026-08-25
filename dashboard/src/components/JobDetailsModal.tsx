@@ -1,15 +1,6 @@
-import React from "react";
-import type { Job } from "../services/api";
-import {
-  X,
-  ExternalLink,
-  Bookmark,
-  BookmarkCheck,
-  Sparkles,
-  Building,
-  MapPin,
-} from "lucide-react";
-import { Button } from "./ui";
+import React, { useEffect } from 'react';
+import type { Job } from '../services/api';
+import { X, ExternalLink, Bookmark, BookmarkCheck, Sparkles, Building, MapPin } from 'lucide-react';
 
 interface JobDetailsModalProps {
   job: Job;
@@ -18,79 +9,81 @@ interface JobDetailsModalProps {
   onApply: (url: string, id: number) => void;
 }
 
-export const JobDetailsModal: React.FC<JobDetailsModalProps> = ({
-  job,
-  onClose,
-  onSave,
-  onApply,
-}) => {
+export const JobDetailsModal: React.FC<JobDetailsModalProps> = ({ job, onClose, onSave, onApply }) => {
+  // Keyboard close + focus trap
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = ""; };
+  }, [onClose]);
+
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0d253d]/55 backdrop-blur-[4px] animate-[fadeUp_0.15s_ease_forwards]"
       onClick={onClose}
     >
       <div
-        className="bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl animate-modal-scale overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
+        className="animate-modal-scale bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-2xl w-full max-w-[680px] max-h-[88vh] flex flex-col shadow-[var(--s-shadow-2)] overflow-hidden"
+        onClick={e => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
       >
+        {/* Top indigo strip */}
+        <div className="h-[3px] bg-gradient-to-r from-[var(--primary)] via-[var(--primary-border)] to-[var(--primary)] shrink-0" />
+
         {/* Header */}
-        <div className="flex justify-between items-start p-6 border-b border-slate-100 dark:border-slate-800/80">
-          <div className="pr-4">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 leading-tight">
+        <div className="flex justify-between items-start pt-6 px-7 pb-5 border-b border-[var(--border-subtle)] shrink-0">
+          <div className="pr-4 flex-1 min-w-0">
+            <h2 id="modal-title" className="text-[20px] font-light text-[var(--text-primary)] m-0 mb-2 tracking-tight [font-feature-settings:'ss01']">
               {job.title}
             </h2>
-            <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500 dark:text-slate-400 mt-2">
-              <span className="flex items-center gap-1 font-medium text-slate-700 dark:text-slate-300">
-                <Building className="w-4 h-4 text-slate-400" />
-                {job.company}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 text-sm font-normal text-[var(--text-secondary)]">
+                <Building size={13} className="text-[var(--text-muted)]" /> {job.company}
               </span>
-              <span>•</span>
-              <span className="flex items-center gap-1">
-                <MapPin className="w-4 h-4 text-slate-400" />
-                {job.location}
-              </span>
-              {job.source && (
+              {job.location && (
                 <>
-                  <span>•</span>
-                  <span className="text-xs px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                    {job.source}
+                  <span className="text-[var(--border-strong)]">·</span>
+                  <span className="inline-flex items-center gap-1.5 text-[13px] font-light text-[var(--text-muted)]">
+                    <MapPin size={12} /> {job.location}
                   </span>
                 </>
+              )}
+              {job.source && (
+                <span className="text-[11px] font-light py-0.5 px-2 rounded-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-muted)]">
+                  {job.source}
+                </span>
               )}
             </div>
           </div>
           <button
             onClick={onClose}
             aria-label="Close modal"
-            className="p-2 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0 cursor-pointer"
+            className="shrink-0 w-8 h-8 rounded-lg bg-transparent border-none cursor-pointer flex items-center justify-center text-[var(--text-muted)] transition-colors duration-150 hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)]"
           >
-            <X className="w-5 h-5" />
+            <X size={18} />
           </button>
         </div>
 
-        {/* Scrollable Body */}
-        <div className="p-6 overflow-y-auto space-y-6">
+        {/* Scrollable body */}
+        <div className="flex-1 overflow-y-auto py-6 px-7 flex flex-col gap-6 overscroll-contain">
+          {/* AI Summary */}
           {job.ai_summary && (
-            <div className="bg-blue-50/70 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 p-4 rounded-xl">
-              <div className="flex items-center gap-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-2">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>AI Job Insights</span>
+            <div className="bg-indigo-600/5 border border-blue-600/10 rounded-xl py-4 px-5">
+              <div className="flex items-center gap-1.5 text-[11px] font-normal text-[var(--primary)] tracking-wide uppercase mb-2.5">
+                <Sparkles size={12} /> AI Job Insights
               </div>
-              <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
+              <p className="text-sm font-light text-[var(--text-secondary)] leading-relaxed m-0">
                 {job.ai_summary}
               </p>
-
               {job.missing_skills && job.missing_skills.length > 0 && (
-                <div className="mt-4 pt-3 border-t border-blue-100/80 dark:border-blue-900/30">
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-2">
-                    Skills to highlight:
-                  </span>
+                <div className="mt-3.5 pt-3.5 border-t border-blue-600/10">
+                  <span className="text-[11px] font-normal text-[var(--text-muted)] block mb-2">Skills to highlight:</span>
                   <div className="flex flex-wrap gap-1.5">
                     {job.missing_skills.map((skill, i) => (
-                      <span
-                        key={i}
-                        className="px-2.5 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs rounded-md font-medium"
-                      >
+                      <span key={i} className="text-xs font-light py-1 px-2.5 rounded-full bg-[var(--bg-card)] border border-[var(--border-subtle)] text-[var(--text-secondary)]">
                         {skill}
                       </span>
                     ))}
@@ -100,38 +93,31 @@ export const JobDetailsModal: React.FC<JobDetailsModalProps> = ({
             </div>
           )}
 
+          {/* Description */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3">
-              Job Description
-            </h3>
-            <div className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed whitespace-pre-wrap font-sans">
+            <div className="text-[11px] font-normal text-[var(--text-muted)] tracking-wide uppercase mb-3.5">Job Description</div>
+            <div className="text-sm font-light text-[var(--text-secondary)] leading-[1.8] whitespace-pre-wrap">
               {job.description}
             </div>
           </div>
         </div>
 
-        {/* Footer Actions */}
-        <div className="p-4 sm:px-6 sm:py-4 border-t border-slate-100 dark:border-slate-800/80 flex justify-between items-center bg-slate-50 dark:bg-[#0c1220]">
-          <Button
-            variant="secondary"
+        {/* Footer actions */}
+        <div className="flex justify-between items-center py-4 px-7 border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] shrink-0">
+          <button
             onClick={() => onSave(job.id, job.saved)}
-            icon={
-              job.saved ? (
-                <BookmarkCheck className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              ) : (
-                <Bookmark className="w-4 h-4" />
-              )
-            }
+            className="btn-ghost text-[13px]"
           >
+            {job.saved ? <BookmarkCheck size={14} className="text-[var(--primary)]" /> : <Bookmark size={14} />}
             {job.saved ? "Saved" : "Save Job"}
-          </Button>
+          </button>
 
-          <Button
+          <button
             onClick={() => onApply(job.apply_url, job.id)}
-            icon={<ExternalLink className="w-4 h-4" />}
+            className="btn-primary text-sm py-2.5 px-6"
           >
-            Apply on {job.source || "Website"}
-          </Button>
+            <ExternalLink size={14} /> Apply on {job.source || 'Website'}
+          </button>
         </div>
       </div>
     </div>
