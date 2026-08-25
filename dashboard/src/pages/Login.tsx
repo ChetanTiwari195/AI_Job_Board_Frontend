@@ -28,7 +28,7 @@ export const Login: React.FC = () => {
       if (!res.ok) { const d = await res.json(); throw new Error(d.detail || "Authentication failed"); }
       const data = await res.json();
       if (data.require_otp) { setOtpToken(data.otp_token); setShowOtpInput(true); setMessage(data.message || "Check your email for the OTP code."); return; }
-      login(data.access_token); navigate("/");
+      login(data.access_token); navigate("/dashboard");
     } catch (err: any) { setError(err.message); }
     finally { setSubmitting(false); }
   };
@@ -49,98 +49,83 @@ export const Login: React.FC = () => {
     finally { setSubmitting(false); }
   };
 
-  const inputStyle: React.CSSProperties = {
-    width: "100%", padding: "10px 14px", fontSize: 15, fontWeight: 300,
-    color: "var(--text-primary)", background: "var(--bg-surface)",
-    border: "1px solid var(--s-hairline-input)", borderRadius: 8,
-    outline: "none", fontFamily: "inherit", transition: "border-color 0.15s ease, box-shadow 0.15s ease",
-  };
-
-  const labelStyle: React.CSSProperties = { display: "block", fontSize: 12, fontWeight: 400, color: "var(--text-muted)", marginBottom: 6 };
-
   return (
-    <div style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, background: "var(--bg-app)" }}>
+    <div className="min-h-[100dvh] flex items-center justify-center p-6 bg-[var(--bg-app)]">
       {/* Subtle gradient mesh behind card */}
-      <div aria-hidden="true" style={{ position: "fixed", inset: 0, zIndex: 0, background: "radial-gradient(ellipse 70% 60% at 50% -10%, rgba(37,99,235,0.06) 0%, transparent 60%)", pointerEvents: "none" }} />
+      <div aria-hidden="true" className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_70%_60%_at_50%_-10%,rgba(37,99,235,0.06)_0%,transparent_60%)]" />
 
-      <div className="card animate-modal-scale" style={{ position: "relative", zIndex: 1, width: "100%", maxWidth: 420, padding: 36, overflow: "hidden" }}>
+      <div className="card animate-modal-scale relative z-10 w-full max-w-[420px] p-9 overflow-hidden">
         {/* Indigo accent top strip */}
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "linear-gradient(90deg, var(--primary), var(--primary-border), var(--primary))" }} />
+        <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[var(--primary)] via-[var(--primary-border)] to-[var(--primary)]" />
 
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: 32 }}>
-          <div style={{ width: 48, height: 48, borderRadius: 14, background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", boxShadow: "0 4px 12px rgba(37,99,235,0.25)" }}>
+        <div className="text-center mb-8">
+          <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center mx-auto mb-4 shadow-[0_4px_12px_rgba(37,99,235,0.25)]">
             {showOtpInput ? <ShieldCheck size={22} color="white" /> : <Briefcase size={22} color="white" />}
           </div>
-          <h1 style={{ fontSize: 22, fontWeight: 300, color: "var(--text-primary)", margin: "0 0 6px", letterSpacing: "-0.4px", fontFeatureSettings: '"ss01"' }}>
-            {showOtpInput ? "Security Verification" : (isLogin ? "Sign in to AI Job Board" : "Create your account")}
+          <h1 className="text-[22px] font-light text-[var(--text-primary)] m-0 mb-1.5 tracking-tight [font-feature-settings:'ss01']">
+            {showOtpInput ? "Security Verification" : (isLogin ? "Sign in to Linkbay" : "Create your account")}
           </h1>
-          <p style={{ fontSize: 14, fontWeight: 300, color: "var(--text-muted)", margin: 0 }}>
+          <p className="text-sm font-light text-[var(--text-muted)] m-0">
             {showOtpInput ? "Enter the 6-digit code sent to your email" : (isLogin ? "Welcome back. Enter your details to continue." : "Start discovering AI-matched opportunities.")}
           </p>
         </div>
 
         {/* Alerts */}
         {error && (
-          <div className="animate-fade-in" style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 16px", borderRadius: 10, background: "var(--s-danger-bg)", border: "1px solid var(--s-danger-border)", color: "var(--s-danger-text)", fontSize: 13, fontWeight: 300, marginBottom: 20 }}>
-            <AlertCircle size={14} style={{ flexShrink: 0 }} /> {error}
+          <div className="animate-fade-in flex items-center gap-2.5 px-4 py-3 rounded-lg bg-[var(--s-danger-bg)] border border-[var(--s-danger-border)] text-[var(--s-danger-text)] text-[13px] font-light mb-5">
+            <AlertCircle size={14} className="shrink-0" /> {error}
           </div>
         )}
         {message && (
-          <div className="animate-fade-in" style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 16px", borderRadius: 10, background: "var(--s-success-bg)", border: "1px solid var(--s-success-border)", color: "var(--s-success-text)", fontSize: 13, fontWeight: 300, marginBottom: 20 }}>
-            <CheckCircle2 size={14} style={{ flexShrink: 0 }} /> {message}
+          <div className="animate-fade-in flex items-center gap-2.5 px-4 py-3 rounded-lg bg-[var(--s-success-bg)] border border-[var(--s-success-border)] text-[var(--s-success-text)] text-[13px] font-light mb-5">
+            <CheckCircle2 size={14} className="shrink-0" /> {message}
           </div>
         )}
 
         {!showOtpInput ? (
           <>
-            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div>
-                <label style={labelStyle}>Email address</label>
+                <label className="block text-xs font-normal text-[var(--text-muted)] mb-1.5">Email address</label>
                 <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
-                  placeholder="name@example.com" autoComplete="email" style={inputStyle}
-                  onFocus={e => { e.target.style.borderColor = "var(--primary)"; e.target.style.boxShadow = "0 0 0 3px rgba(37,99,235,0.08)"; }}
-                  onBlur={e => { e.target.style.borderColor = "var(--s-hairline-input)"; e.target.style.boxShadow = "none"; }} />
+                  placeholder="name@example.com" autoComplete="email" className="s-input w-full px-3.5 py-2.5 text-[15px] font-light text-[var(--text-primary)] bg-[var(--bg-surface)] border border-[var(--s-hairline-input)] rounded-lg outline-none font-sans transition-all duration-150 focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.08)]" />
               </div>
               <div>
-                <label style={labelStyle}>Password</label>
+                <label className="block text-xs font-normal text-[var(--text-muted)] mb-1.5">Password</label>
                 <input type="password" value={password} onChange={e => setPassword(e.target.value)} required
-                  placeholder="••••••••" autoComplete={isLogin ? "current-password" : "new-password"} style={inputStyle}
-                  onFocus={e => { e.target.style.borderColor = "var(--primary)"; e.target.style.boxShadow = "0 0 0 3px rgba(37,99,235,0.08)"; }}
-                  onBlur={e => { e.target.style.borderColor = "var(--s-hairline-input)"; e.target.style.boxShadow = "none"; }} />
+                  placeholder="••••••••" autoComplete={isLogin ? "current-password" : "new-password"} className="s-input w-full px-3.5 py-2.5 text-[15px] font-light text-[var(--text-primary)] bg-[var(--bg-surface)] border border-[var(--s-hairline-input)] rounded-lg outline-none font-sans transition-all duration-150 focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.08)]" />
               </div>
-              <button type="submit" disabled={submitting} className="btn-primary" style={{ width: "100%", justifyContent: "center", padding: "12px", fontSize: 15, marginTop: 4, borderRadius: 9999 }}>
+              <button type="submit" disabled={submitting} className="btn-primary w-full justify-center p-3 text-[15px] mt-1 rounded-full">
                 {submitting
-                  ? <><div style={{ width: 16, height: 16, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "white", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} /> Signing in…</>
+                  ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Signing in…</>
                   : <>{isLogin ? "Sign In" : "Create Account"} <ArrowRight size={16} /></>
                 }
               </button>
             </form>
 
-            <div style={{ marginTop: 24, paddingTop: 20, borderTop: "1px solid var(--border-subtle)", textAlign: "center" }}>
-              <p style={{ fontSize: 13, fontWeight: 300, color: "var(--text-muted)", margin: 0 }}>
+            <div className="mt-6 pt-5 border-t border-[var(--border-subtle)] text-center">
+              <p className="text-[13px] font-light text-[var(--text-muted)] m-0">
                 {isLogin ? "Don't have an account? " : "Already have an account? "}
                 <button type="button" onClick={() => { setIsLogin(!isLogin); setError(""); setMessage(""); }}
-                  style={{ background: "none", border: "none", color: "var(--primary)", fontWeight: 400, fontSize: 13, cursor: "pointer", textDecoration: "underline", padding: 0 }}>
+                  className="bg-transparent border-none text-blue-600 font-normal text-[13px] cursor-pointer underline p-0">
                   {isLogin ? "Sign up" : "Sign in"}
                 </button>
               </p>
             </div>
           </>
         ) : (
-          <form onSubmit={handleOtpSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <form onSubmit={handleOtpSubmit} className="flex flex-col gap-4">
             <div>
-              <label style={{ ...labelStyle, textAlign: "center" }}>Verification Code</label>
+              <label className="block text-xs font-normal text-[var(--text-muted)] mb-1.5 text-center">Verification Code</label>
               <input type="text" maxLength={6} placeholder="123456" value={otp} onChange={e => setOtp(e.target.value)} autoFocus required
-                style={{ ...inputStyle, textAlign: "center", letterSpacing: "0.4em", fontSize: 22, fontFamily: "monospace", fontWeight: 400 }}
-                onFocus={e => { e.target.style.borderColor = "var(--primary)"; e.target.style.boxShadow = "0 0 0 3px rgba(37,99,235,0.08)"; }}
-                onBlur={e => { e.target.style.borderColor = "var(--s-hairline-input)"; e.target.style.boxShadow = "none"; }} />
+                className="s-input w-full px-3.5 py-2.5 text-[22px] font-normal text-center tracking-[0.4em] font-mono text-[var(--text-primary)] bg-[var(--bg-surface)] border border-[var(--s-hairline-input)] rounded-lg outline-none transition-all duration-150 focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.08)]" />
             </div>
-            <button type="submit" disabled={submitting || otp.length < 6} className="btn-primary" style={{ width: "100%", justifyContent: "center", padding: "12px", fontSize: 15, borderRadius: 9999 }}>
-              {submitting ? <><div style={{ width: 16, height: 16, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "white", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} /> Verifying…</> : "Verify Code"}
+            <button type="submit" disabled={submitting || otp.length < 6} className="btn-primary w-full justify-center p-3 text-[15px] rounded-full">
+              {submitting ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Verifying…</> : "Verify Code"}
             </button>
             <button type="button" onClick={() => { setShowOtpInput(false); setOtp(""); setMessage(""); setError(""); }}
-              className="btn-ghost" style={{ width: "100%", justifyContent: "center", borderRadius: 9999 }}>
+              className="btn-ghost w-full justify-center rounded-full">
               Back to Login
             </button>
           </form>

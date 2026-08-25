@@ -6,8 +6,8 @@ import { getSettings, updateSettings, type UserSettings } from '../services/api'
 const Alert: React.FC<{ type: 'success' | 'error'; msg: string }> = ({ type, msg }) => {
   const isSuccess = type === 'success';
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 16px", borderRadius: 10, border: `1px solid var(--s-${isSuccess ? 'success' : 'danger'}-border)`, background: `var(--s-${isSuccess ? 'success' : 'danger'}-bg)`, color: `var(--s-${isSuccess ? 'success' : 'danger'}-text)`, fontSize: 14, fontWeight: 300, marginBottom: 20, animationName: "fadeUp", animationDuration: "0.2s", animationFillMode: "forwards" }}>
-      {isSuccess ? <CheckCircle2 size={16} style={{ flexShrink: 0, color: "var(--s-success)" }} /> : <AlertCircle size={16} style={{ flexShrink: 0, color: "var(--s-danger)" }} />}
+    <div className={`animate-fade-in flex items-center gap-2.5 px-4 py-3 rounded-lg border text-sm font-light mb-5 ${isSuccess ? 'border-[var(--s-success-border)] bg-[var(--s-success-bg)] text-[var(--s-success-text)]' : 'border-[var(--s-danger-border)] bg-[var(--s-danger-bg)] text-[var(--s-danger-text)]'}`}>
+      {isSuccess ? <CheckCircle2 size={16} className="shrink-0 text-[var(--s-success)]" /> : <AlertCircle size={16} className="shrink-0 text-[var(--s-danger)]" />}
       {msg}
     </div>
   );
@@ -15,14 +15,14 @@ const Alert: React.FC<{ type: 'success' | 'error'; msg: string }> = ({ type, msg
 
 // ── Settings card ──────────────────────────────────────────────────────────
 const SettingsCard: React.FC<{ icon: React.ReactNode; title: string; subtitle: string; children: React.ReactNode }> = ({ icon, title, subtitle, children }) => (
-  <div className="card" style={{ padding: 28, marginBottom: 20 }}>
-    <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24, paddingBottom: 20, borderBottom: "1px solid var(--border-subtle)" }}>
-      <div style={{ width: 38, height: 38, borderRadius: 10, background: "rgba(37,99,235,0.06)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--primary)", flexShrink: 0 }}>
+  <div className="card p-7 mb-5">
+    <div className="flex items-center gap-3 mb-6 pb-5 border-b border-[var(--border-subtle)]">
+      <div className="w-[38px] h-[38px] rounded-md bg-blue-600/10 flex items-center justify-center text-[var(--primary)] shrink-0">
         {icon}
       </div>
       <div>
-        <div style={{ fontSize: 16, fontWeight: 400, color: "var(--text-primary)", letterSpacing: "-0.2px" }}>{title}</div>
-        <div style={{ fontSize: 13, fontWeight: 300, color: "var(--text-muted)", marginTop: 2 }}>{subtitle}</div>
+        <div className="text-base font-normal text-[var(--text-primary)] tracking-tight">{title}</div>
+        <div className="text-[13px] font-light text-[var(--text-muted)] mt-0.5">{subtitle}</div>
       </div>
     </div>
     {children}
@@ -50,14 +50,12 @@ export const Settings: React.FC = () => {
     } finally { setIsSaving(false); }
   };
 
-  const labelStyle: React.CSSProperties = { display: "block", fontSize: 11, fontWeight: 400, color: "var(--text-muted)", letterSpacing: "0.1px", textTransform: "uppercase", marginBottom: 8 };
-
   return (
-    <div style={{ padding: "28px 32px", maxWidth: 800, margin: "0 auto" }}>
+    <div className="py-7 px-8 max-w-[800px] mx-auto">
       {/* Header */}
-      <div style={{ paddingBottom: 20, borderBottom: "1px solid var(--border-subtle)", marginBottom: 28 }}>
-        <h1 style={{ fontSize: 26, fontWeight: 300, color: "var(--text-primary)", letterSpacing: "-0.64px", margin: 0, fontFeatureSettings: '"ss01"' }}>Settings</h1>
-        <p style={{ fontSize: 14, fontWeight: 300, color: "var(--text-muted)", margin: "4px 0 0" }}>Configure search sources, automation triggers, and scraping intervals</p>
+      <div className="pb-5 border-b border-[var(--border-subtle)] mb-7">
+        <h1 className="text-[26px] font-light text-[var(--text-primary)] tracking-tight m-0 [font-feature-settings:'ss01']">Settings</h1>
+        <p className="text-sm font-light text-[var(--text-muted)] mt-1 mb-0">Configure search sources, automation triggers, and scraping intervals</p>
       </div>
 
       {successMsg && <Alert type="success" msg={successMsg} />}
@@ -66,66 +64,64 @@ export const Settings: React.FC = () => {
       {/* HiringCafe card */}
       <SettingsCard icon={<Link2 size={18} />} title="HiringCafe Search Feed" subtitle="Connect your personalized filter URL to fetch target postings">
         {/* Setup box */}
-        <div style={{ background: "rgba(83,58,253,0.04)", border: "1px solid rgba(83,58,253,0.12)", borderRadius: 10, padding: "16px 20px", marginBottom: 20 }}>
-          <div style={{ fontSize: 11, fontWeight: 400, color: "var(--primary)", letterSpacing: "0.1px", textTransform: "uppercase", marginBottom: 10 }}>Setup instructions</div>
-          <ol style={{ fontSize: 13, fontWeight: 300, color: "var(--text-secondary)", paddingLeft: 16, margin: 0, display: "flex", flexDirection: "column", gap: 6, lineHeight: 1.5 }}>
-            <li>Visit <a href="https://hiringcafe.com" target="_blank" rel="noopener noreferrer" style={{ color: "var(--primary)", textDecoration: "none", fontWeight: 400 }}>hiringcafe.com <ExternalLink size={10} style={{ display: "inline", verticalAlign: "middle" }} /></a></li>
+        <div className="bg-indigo-600/5 border border-indigo-600/10 rounded-lg py-4 px-5 mb-5">
+          <div className="text-[11px] font-normal text-[var(--primary)] tracking-wide uppercase mb-2.5">Setup instructions</div>
+          <ol className="text-[13px] font-light text-[var(--text-secondary)] pl-4 m-0 flex flex-col gap-1.5 leading-relaxed">
+            <li>Visit <a href="https://hiringcafe.com" target="_blank" rel="noopener noreferrer" className="text-[var(--primary)] no-underline font-normal">hiringcafe.com <ExternalLink size={10} className="inline align-middle" /></a></li>
             <li>Set your role, location, remote, and seniority filters.</li>
             <li>Copy the resulting URL from your browser's address bar.</li>
             <li>Paste it below and click "Save Preferences".</li>
           </ol>
         </div>
 
-        <label style={labelStyle}>Search URL</label>
+        <label className="block text-[11px] font-normal text-[var(--text-muted)] tracking-wide uppercase mb-2">Search URL</label>
         <textarea
           value={settings.hiringcafe_url || ''}
           onChange={e => setSettings({ ...settings, hiringcafe_url: e.target.value || null })}
           placeholder="https://hiringcafe.com/?searchState=…"
           rows={3}
-          className="s-input"
-          style={{ fontFamily: "'JetBrains Mono', 'Fira Code', monospace", fontSize: 12, lineHeight: 1.6, resize: "vertical" }}
+          className="s-input font-mono text-xs leading-relaxed resize-y"
         />
-        <p style={{ fontSize: 12, fontWeight: 300, color: "var(--text-muted)", marginTop: 6 }}>
+        <p className="text-xs font-light text-[var(--text-muted)] mt-1.5">
           The background scraper queries this endpoint at regular intervals.
         </p>
       </SettingsCard>
 
       {/* Automation card */}
       <SettingsCard icon={<Clock size={18} />} title="Automation & Sources" subtitle="Manage frequency and connected platforms">
-        <label style={labelStyle}>Refresh Interval (hours)</label>
+        <label className="block text-[11px] font-normal text-[var(--text-muted)] tracking-wide uppercase mb-2">Refresh Interval (hours)</label>
         <input
           type="number" value={settings.scraper_interval_hours}
           onChange={e => setSettings({ ...settings, scraper_interval_hours: parseInt(e.target.value) || 6 })}
           min={1} max={168}
-          className="s-input"
-          style={{ maxWidth: 160, fontSize: 15 }}
+          className="s-input max-w-[160px] text-[15px]"
         />
-        <p style={{ fontSize: 12, fontWeight: 300, color: "var(--text-muted)", marginTop: 6, marginBottom: 24 }}>
+        <p className="text-xs font-light text-[var(--text-muted)] mt-1.5 mb-6">
           Default: 6 hours. Lower intervals fetch fresher listings more frequently.
         </p>
 
-        <label style={labelStyle}>Job Board Connectors</label>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8, maxWidth: 440 }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", borderRadius: 8, background: "var(--bg-surface)", border: "1px solid var(--border-subtle)" }}>
-            <span style={{ fontSize: 14, fontWeight: 400, color: "var(--text-primary)" }}>HiringCafe</span>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 11, fontWeight: 400, color: "var(--s-success)", background: "var(--s-success-bg)", border: "1px solid var(--s-success-border)", padding: "3px 8px", borderRadius: 9999 }}>
+        <label className="block text-[11px] font-normal text-[var(--text-muted)] tracking-wide uppercase mb-2">Job Board Connectors</label>
+        <div className="flex flex-col gap-2 max-w-[440px]">
+          <div className="flex items-center justify-between py-2.5 px-3.5 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
+            <span className="text-sm font-normal text-[var(--text-primary)]">HiringCafe</span>
+            <span className="inline-flex items-center gap-1 text-[11px] font-normal text-[var(--s-success)] bg-[var(--s-success-bg)] border border-[var(--s-success-border)] py-0.5 px-2 rounded-full">
               <Check size={10} /> Active
             </span>
           </div>
           {["Greenhouse Direct", "Lever Direct"].map(name => (
-            <div key={name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", borderRadius: 8, background: "var(--bg-surface)", border: "1px solid var(--border-subtle)", opacity: 0.55 }}>
-              <span style={{ fontSize: 14, fontWeight: 300, color: "var(--text-muted)" }}>{name}</span>
-              <span style={{ fontSize: 11, fontWeight: 300, color: "var(--text-muted)", background: "var(--bg-surface)", border: "1px solid var(--border-subtle)", padding: "3px 8px", borderRadius: 9999 }}>Coming soon</span>
+            <div key={name} className="flex items-center justify-between py-2.5 px-3.5 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-subtle)] opacity-55">
+              <span className="text-sm font-light text-[var(--text-muted)]">{name}</span>
+              <span className="text-[11px] font-light text-[var(--text-muted)] bg-[var(--bg-surface)] border border-[var(--border-subtle)] py-0.5 px-2 rounded-full">Coming soon</span>
             </div>
           ))}
         </div>
       </SettingsCard>
 
       {/* Save button */}
-      <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 8 }}>
-        <button onClick={handleSave} disabled={isSaving} className="btn-primary" style={{ fontSize: 14, padding: "10px 24px" }}>
+      <div className="flex justify-end pt-2">
+        <button onClick={handleSave} disabled={isSaving} className="btn-primary text-sm py-2.5 px-6">
           {isSaving
-            ? <><div style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "white", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} /> Saving…</>
+            ? <><div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Saving…</>
             : <><Save size={14} /> Save Preferences</>
           }
         </button>

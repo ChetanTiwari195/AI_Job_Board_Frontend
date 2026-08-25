@@ -20,40 +20,39 @@ export const JobDetailsModal: React.FC<JobDetailsModalProps> = ({ job, onClose, 
 
   return (
     <div
-      style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, background: "rgba(13,37,61,0.55)", backdropFilter: "blur(4px)", animation: "fadeUp 0.15s ease forwards" }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0d253d]/55 backdrop-blur-[4px] animate-[fadeUp_0.15s_ease_forwards]"
       onClick={onClose}
     >
       <div
-        className="animate-modal-scale"
-        style={{ background: "var(--bg-card)", border: "1px solid var(--border-subtle)", borderRadius: 16, width: "100%", maxWidth: 680, maxHeight: "88vh", display: "flex", flexDirection: "column", boxShadow: "var(--s-shadow-2)", overflow: "hidden" }}
+        className="animate-modal-scale bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-2xl w-full max-w-[680px] max-h-[88vh] flex flex-col shadow-[var(--s-shadow-2)] overflow-hidden"
         onClick={e => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
       >
         {/* Top indigo strip */}
-        <div style={{ height: 3, background: "linear-gradient(90deg, var(--primary), var(--primary-border), var(--primary))", flexShrink: 0 }} />
+        <div className="h-[3px] bg-gradient-to-r from-[var(--primary)] via-[var(--primary-border)] to-[var(--primary)] shrink-0" />
 
         {/* Header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "24px 28px 20px", borderBottom: "1px solid var(--border-subtle)", flexShrink: 0 }}>
-          <div style={{ paddingRight: 16, flex: 1, minWidth: 0 }}>
-            <h2 id="modal-title" style={{ fontSize: 20, fontWeight: 300, color: "var(--text-primary)", margin: "0 0 8px", letterSpacing: "-0.4px", fontFeatureSettings: '"ss01"' }}>
+        <div className="flex justify-between items-start pt-6 px-7 pb-5 border-b border-[var(--border-subtle)] shrink-0">
+          <div className="pr-4 flex-1 min-w-0">
+            <h2 id="modal-title" className="text-[20px] font-light text-[var(--text-primary)] m-0 mb-2 tracking-tight [font-feature-settings:'ss01']">
               {job.title}
             </h2>
-            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 14, fontWeight: 400, color: "var(--text-secondary)" }}>
-                <Building size={13} style={{ color: "var(--text-muted)" }} /> {job.company}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 text-sm font-normal text-[var(--text-secondary)]">
+                <Building size={13} className="text-[var(--text-muted)]" /> {job.company}
               </span>
               {job.location && (
                 <>
-                  <span style={{ color: "var(--border-strong)" }}>·</span>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 13, fontWeight: 300, color: "var(--text-muted)" }}>
+                  <span className="text-[var(--border-strong)]">·</span>
+                  <span className="inline-flex items-center gap-1.5 text-[13px] font-light text-[var(--text-muted)]">
                     <MapPin size={12} /> {job.location}
                   </span>
                 </>
               )}
               {job.source && (
-                <span style={{ fontSize: 11, fontWeight: 300, padding: "2px 8px", borderRadius: 9999, background: "var(--bg-surface)", border: "1px solid var(--border-subtle)", color: "var(--text-muted)" }}>
+                <span className="text-[11px] font-light py-0.5 px-2 rounded-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-muted)]">
                   {job.source}
                 </span>
               )}
@@ -62,31 +61,29 @@ export const JobDetailsModal: React.FC<JobDetailsModalProps> = ({ job, onClose, 
           <button
             onClick={onClose}
             aria-label="Close modal"
-            style={{ flexShrink: 0, width: 32, height: 32, borderRadius: 8, background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)", transition: "background 0.15s ease, color 0.15s ease" }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "var(--bg-surface)"; (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "none"; (e.currentTarget as HTMLElement).style.color = "var(--text-muted)"; }}
+            className="shrink-0 w-8 h-8 rounded-lg bg-transparent border-none cursor-pointer flex items-center justify-center text-[var(--text-muted)] transition-colors duration-150 hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)]"
           >
             <X size={18} />
           </button>
         </div>
 
         {/* Scrollable body */}
-        <div style={{ flex: 1, overflowY: "auto", padding: "24px 28px", display: "flex", flexDirection: "column", gap: 24, overscrollBehavior: "contain" }}>
+        <div className="flex-1 overflow-y-auto py-6 px-7 flex flex-col gap-6 overscroll-contain">
           {/* AI Summary */}
           {job.ai_summary && (
-            <div style={{ background: "rgba(83,58,253,0.04)", border: "1px solid rgba(37,99,235,0.1)", borderRadius: 12, padding: "16px 20px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, fontWeight: 400, color: "var(--primary)", letterSpacing: "0.1px", textTransform: "uppercase", marginBottom: 10 }}>
+            <div className="bg-indigo-600/5 border border-blue-600/10 rounded-xl py-4 px-5">
+              <div className="flex items-center gap-1.5 text-[11px] font-normal text-[var(--primary)] tracking-wide uppercase mb-2.5">
                 <Sparkles size={12} /> AI Job Insights
               </div>
-              <p style={{ fontSize: 14, fontWeight: 300, color: "var(--text-secondary)", lineHeight: 1.7, margin: 0 }}>
+              <p className="text-sm font-light text-[var(--text-secondary)] leading-relaxed m-0">
                 {job.ai_summary}
               </p>
               {job.missing_skills && job.missing_skills.length > 0 && (
-                <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(37,99,235,0.08)" }}>
-                  <span style={{ fontSize: 11, fontWeight: 400, color: "var(--text-muted)", display: "block", marginBottom: 8 }}>Skills to highlight:</span>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                <div className="mt-3.5 pt-3.5 border-t border-blue-600/10">
+                  <span className="text-[11px] font-normal text-[var(--text-muted)] block mb-2">Skills to highlight:</span>
+                  <div className="flex flex-wrap gap-1.5">
                     {job.missing_skills.map((skill, i) => (
-                      <span key={i} style={{ fontSize: 12, fontWeight: 300, padding: "3px 10px", borderRadius: 9999, background: "var(--bg-card)", border: "1px solid var(--border-subtle)", color: "var(--text-secondary)" }}>
+                      <span key={i} className="text-xs font-light py-1 px-2.5 rounded-full bg-[var(--bg-card)] border border-[var(--border-subtle)] text-[var(--text-secondary)]">
                         {skill}
                       </span>
                     ))}
@@ -98,28 +95,26 @@ export const JobDetailsModal: React.FC<JobDetailsModalProps> = ({ job, onClose, 
 
           {/* Description */}
           <div>
-            <div style={{ fontSize: 11, fontWeight: 400, color: "var(--text-muted)", letterSpacing: "0.1px", textTransform: "uppercase", marginBottom: 14 }}>Job Description</div>
-            <div style={{ fontSize: 14, fontWeight: 300, color: "var(--text-secondary)", lineHeight: 1.8, whiteSpace: "pre-wrap" }}>
+            <div className="text-[11px] font-normal text-[var(--text-muted)] tracking-wide uppercase mb-3.5">Job Description</div>
+            <div className="text-sm font-light text-[var(--text-secondary)] leading-[1.8] whitespace-pre-wrap">
               {job.description}
             </div>
           </div>
         </div>
 
         {/* Footer actions */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 28px", borderTop: "1px solid var(--border-subtle)", background: "var(--bg-surface)", flexShrink: 0 }}>
+        <div className="flex justify-between items-center py-4 px-7 border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] shrink-0">
           <button
             onClick={() => onSave(job.id, job.saved)}
-            className="btn-ghost"
-            style={{ fontSize: 13 }}
+            className="btn-ghost text-[13px]"
           >
-            {job.saved ? <BookmarkCheck size={14} color="var(--primary)" /> : <Bookmark size={14} />}
+            {job.saved ? <BookmarkCheck size={14} className="text-[var(--primary)]" /> : <Bookmark size={14} />}
             {job.saved ? "Saved" : "Save Job"}
           </button>
 
           <button
             onClick={() => onApply(job.apply_url, job.id)}
-            className="btn-primary"
-            style={{ fontSize: 14, padding: "10px 24px" }}
+            className="btn-primary text-sm py-2.5 px-6"
           >
             <ExternalLink size={14} /> Apply on {job.source || 'Website'}
           </button>

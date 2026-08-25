@@ -10,36 +10,36 @@ const PageHeader: React.FC<{
   title: string; subtitle: string; badge?: string;
   actions?: React.ReactNode;
 }> = ({ title, subtitle, badge, actions }) => (
-  <div style={{ display: "flex", flexDirection: "column", gap: 4, paddingBottom: 20, borderBottom: "1px solid var(--border-subtle)", marginBottom: 24 }}>
-    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+  <div className="flex flex-col gap-1 pb-5 border-b border-[var(--border-subtle)] mb-6">
+    <div className="flex items-start justify-between gap-3 flex-wrap">
       <div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <h1 style={{ fontSize: 26, fontWeight: 300, color: "var(--text-primary)", letterSpacing: "-0.64px", margin: 0, fontFeatureSettings: '"ss01"' }}>{title}</h1>
-          {badge && <span className="pill-tag" style={{ fontSize: 11 }}>{badge}</span>}
+        <div className="flex items-center gap-2.5">
+          <h1 className="text-[26px] font-light text-[var(--text-primary)] tracking-tight m-0 [font-feature-settings:'ss01']">{title}</h1>
+          {badge && <span className="pill-tag text-[11px]">{badge}</span>}
         </div>
-        <p style={{ fontSize: 14, fontWeight: 300, color: "var(--text-muted)", margin: "4px 0 0" }}>{subtitle}</p>
+        <p className="text-sm font-light text-[var(--text-muted)] mt-1 mb-0">{subtitle}</p>
       </div>
-      {actions && <div style={{ display: "flex", alignItems: "center", gap: 8 }}>{actions}</div>}
+      {actions && <div className="flex items-center gap-2">{actions}</div>}
     </div>
   </div>
 );
 
 // ── Skeleton grid ──────────────────────────────────────────────────────────
 const SkeletonGrid: React.FC<{ count?: number }> = ({ count = 6 }) => (
-  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
+  <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
     {[...Array(count)].map((_, i) => (
-      <div key={i} className="card" style={{ padding: 20, display: "flex", flexDirection: "column", gap: 12 }}>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <div className="skeleton-shimmer" style={{ height: 18, borderRadius: 6, width: "70%" }} />
-          <div className="skeleton-shimmer" style={{ height: 18, width: 18, borderRadius: 6 }} />
+      <div key={i} className="card p-5 flex flex-col gap-3">
+        <div className="flex justify-between">
+          <div className="skeleton-shimmer h-[18px] rounded-md w-[70%]" />
+          <div className="skeleton-shimmer h-[18px] w-[18px] rounded-md" />
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
-          <div className="skeleton-shimmer" style={{ height: 14, borderRadius: 9999, width: 72 }} />
-          <div className="skeleton-shimmer" style={{ height: 14, borderRadius: 9999, width: 56 }} />
+        <div className="flex gap-2">
+          <div className="skeleton-shimmer h-3.5 rounded-full w-[72px]" />
+          <div className="skeleton-shimmer h-3.5 rounded-full w-[56px]" />
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <div className="skeleton-shimmer" style={{ height: 12, borderRadius: 4, width: "100%" }} />
-          <div className="skeleton-shimmer" style={{ height: 12, borderRadius: 4, width: "83%" }} />
+        <div className="flex flex-col gap-1.5">
+          <div className="skeleton-shimmer h-3 rounded w-full" />
+          <div className="skeleton-shimmer h-3 rounded w-[83%]" />
         </div>
       </div>
     ))}
@@ -50,29 +50,27 @@ const SkeletonGrid: React.FC<{ count?: number }> = ({ count = 6 }) => (
 const EmptyState: React.FC<{
   icon: React.ReactNode; title: string; body: string; action?: React.ReactNode;
 }> = ({ icon, title, body, action }) => (
-  <div className="card" style={{ textAlign: "center", padding: "64px 32px", border: "1px dashed var(--border-subtle)" }}>
-    <div style={{ width: 48, height: 48, borderRadius: "50%", background: "rgba(37,99,235,0.06)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", color: "var(--primary)" }}>
+  <div className="card text-center py-16 px-8 border border-dashed border-[var(--border-subtle)]">
+    <div className="w-12 h-12 rounded-full bg-blue-600/10 flex items-center justify-center mx-auto mb-4 text-[var(--primary)]">
       {icon}
     </div>
-    <h3 style={{ fontSize: 16, fontWeight: 400, color: "var(--text-primary)", margin: "0 0 6px", fontFeatureSettings: '"ss01"' }}>{title}</h3>
-    <p style={{ fontSize: 14, fontWeight: 300, color: "var(--text-muted)", maxWidth: 320, margin: "0 auto 20px", lineHeight: 1.6 }}>{body}</p>
+    <h3 className="text-base font-normal text-[var(--text-primary)] m-0 mb-1.5 [font-feature-settings:'ss01']">{title}</h3>
+    <p className="text-sm font-light text-[var(--text-muted)] max-w-xs mx-auto mb-5 leading-relaxed">{body}</p>
     {action}
   </div>
 );
 
 // ── Search input ───────────────────────────────────────────────────────────
 const SearchInput: React.FC<{ value: string; onChange: (v: string) => void; placeholder?: string }> = ({ value, onChange, placeholder = "Filter jobs…" }) => (
-  <div style={{ position: "relative", width: 240 }}>
-    <Search size={14} style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)", pointerEvents: "none" }} />
+  <div className="relative w-60">
+    <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none" />
     <input
       type="text" value={value} onChange={e => onChange(e.target.value)}
       placeholder={placeholder}
-      style={{ width: "100%", paddingLeft: 32, paddingRight: value ? 28 : 10, height: 36, borderRadius: 9999, border: "1px solid var(--border-subtle)", background: "var(--bg-card)", color: "var(--text-primary)", fontSize: 13, fontWeight: 300, outline: "none", transition: "border-color 0.15s ease, box-shadow 0.15s ease" }}
-      onFocus={e => { e.target.style.borderColor = "var(--primary)"; e.target.style.boxShadow = "0 0 0 3px rgba(37,99,235,0.08)"; }}
-      onBlur={e => { e.target.style.borderColor = "var(--border-subtle)"; e.target.style.boxShadow = "none"; }}
+      className={`w-full pl-8 h-9 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-primary)] text-[13px] font-light outline-none transition-all duration-150 focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.08)] ${value ? 'pr-7' : 'pr-2.5'}`}
     />
     {value && (
-      <button onClick={() => onChange("")} style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", padding: 2 }}>
+      <button onClick={() => onChange("")} className="absolute right-2 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer text-[var(--text-muted)] p-0.5">
         <X size={12} />
       </button>
     )}
@@ -121,7 +119,7 @@ export const Dashboard: React.FC = () => {
   );
 
   return (
-    <div style={{ padding: "28px 32px", maxWidth: 1200, margin: "0 auto" }}>
+    <div className="py-7 px-8 max-w-[1200px] mx-auto">
       <PageHeader
         title="Job Feed"
         subtitle="Curated roles matched to your target profile"
@@ -129,8 +127,8 @@ export const Dashboard: React.FC = () => {
         actions={
           <>
             <SearchInput value={searchQuery} onChange={setSearchQuery} placeholder="Filter by title, company…" />
-            <button onClick={handleRefresh} disabled={refreshing} className="btn-ghost" style={{ height: 36, gap: 6, fontSize: 13 }}>
-              <RefreshCw size={13} className={refreshing ? "animate-spin" : ""} style={{ color: refreshing ? "var(--primary)" : undefined }} />
+            <button onClick={handleRefresh} disabled={refreshing} className="btn-ghost h-9 gap-1.5 text-[13px]">
+              <RefreshCw size={13} className={refreshing ? "animate-spin text-blue-600" : ""} />
               {refreshing ? "Fetching…" : "Refresh"}
             </button>
           </>
@@ -143,12 +141,12 @@ export const Dashboard: React.FC = () => {
               title={searchQuery ? "No matching jobs" : "No jobs in feed"}
               body={searchQuery ? "Try different keywords or clear the filter." : "Click Refresh to scan your configured job boards."}
               action={searchQuery
-                ? <button onClick={() => setSearchQuery('')} className="btn-secondary" style={{ fontSize: 13 }}>Clear filter</button>
-                : <button onClick={handleRefresh} className="btn-primary" style={{ fontSize: 13 }}>Refresh Sources</button>
+                ? <button onClick={() => setSearchQuery('')} className="btn-secondary text-[13px]">Clear filter</button>
+                : <button onClick={handleRefresh} className="btn-primary text-[13px]">Refresh Sources</button>
               }
             />
           : (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
               {filtered.map(job => (
                 <JobCard key={job.id} job={job} onClick={() => setSelectedJob(job)} onSave={handleSave} onApply={handleApply} />
               ))}
