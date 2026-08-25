@@ -142,8 +142,30 @@ const sections = [
     ],
   },
   {
+    id: "extension",
+    title: "12. Chrome Extension — Data Collected",
+    content: [
+      { type: "text", text: "The \"Resume Optimizer\" Chrome extension (manifest v3) is a companion tool with a single purpose: ATS keyword analysis and AI-powered LaTeX resume optimization. To perform this function, the extension transmits the following data to AI Job Board servers over an encrypted HTTPS connection:" },
+      { type: "list", items: [
+        { bold: "Resume content", rest: " — The LaTeX or plain-text resume you upload or paste into the extension. Used exclusively to perform keyword analysis and generate an optimized version. Not retained beyond your session unless you explicitly click \"Save Resume to Cloud\"." },
+        { bold: "Job description text", rest: " — The job posting you paste for comparison. Processed server-side to extract relevant keywords and compute an ATS match score. Not stored." },
+        { bold: "Account credentials & auth token", rest: " — Your email address and (bcrypt-hashed) password are used only for account authentication. After login, an auth token is stored in browser localStorage; your raw password is never stored locally." },
+      ]},
+      { type: "heading", text: "What is NOT collected" },
+      { type: "list", items: [
+        { bold: "", rest: "Browsing history or content of any page you visit." },
+        { bold: "", rest: "Data from any tab other than the extension's own side panel." },
+        { bold: "", rest: "Any information not directly provided by you inside the extension UI." },
+      ]},
+      { type: "heading", text: "Consent" },
+      { type: "text", text: "On first launch the extension displays a prominent consent screen listing the above data points. No data is transmitted until you explicitly click \"I Agree\". You may decline at any time; clicking Decline prevents all data transmission and the extension will not function. You can revoke consent by clearing the extension's local storage via chrome://extensions → Details → Storage." },
+      { type: "heading", text: "Single Purpose Compliance" },
+      { type: "text", text: "Data collection is strictly limited to what is necessary to perform ATS analysis and resume optimization — the extension's declared single purpose. No data is used for advertising, analytics unrelated to the core feature, or any cross-site tracking." },
+    ],
+  },
+  {
     id: "contact",
-    title: "11. Contact Us",
+    title: "13. Contact Us",
     content: [
       { type: "text", text: "If you have any questions, concerns, or requests regarding this Privacy Policy, please reach out:" },
       { type: "list", items: [
