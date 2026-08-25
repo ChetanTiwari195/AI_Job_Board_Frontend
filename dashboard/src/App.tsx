@@ -25,6 +25,7 @@ import { Settings } from "./pages/Settings";
 import { Login } from "./pages/Login";
 import { ResumeMatches } from "./pages/ResumeMatches";
 import { Landing } from "./pages/Landing";
+import { PrivacyPolicy } from "./pages/PrivacyPolicy";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -211,6 +212,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route
             path="/dashboard"
             element={
