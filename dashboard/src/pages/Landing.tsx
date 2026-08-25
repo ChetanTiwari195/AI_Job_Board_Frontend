@@ -16,8 +16,12 @@ import {
   ExternalLink,
   Sparkles,
   Target,
+  Sparkles,
+  Target,
   Layers,
   Eye,
+  Lock,
+  Shield,
   GitBranch,
   Link2,
   Share2,
@@ -1179,6 +1183,91 @@ const CTABand: React.FC = () => {
   );
 };
 
+// ── Privacy Section ─────────────────────────────────────────────────────────────
+const PrivacySection: React.FC = () => {
+  const reduce = useReducedMotion();
+  return (
+    <section className="bg-[var(--lp-canvas-cream)] py-24 px-6 relative overflow-hidden border-t border-[var(--lp-hairline)]">
+      <div className="max-w-[1200px] mx-auto text-center relative z-10">
+        <motion.div
+          {...(reduce ? {} : fadeInView(0))}
+          className="inline-flex items-center gap-1.5 py-1 px-3 bg-[var(--primary-subtle)] border border-[var(--primary-border)] rounded-full mb-6"
+        >
+          <Shield size={11} className="text-[var(--primary)]" />
+          <span className="text-[10px] font-medium text-[var(--primary)] tracking-widest uppercase">
+            Privacy First
+          </span>
+        </motion.div>
+        
+        <motion.h2
+          {...(reduce ? {} : fadeInView(0.05))}
+          className="text-[clamp(28px,4vw,42px)] font-light text-[var(--lp-ink)] tracking-tight leading-[1.1] mb-5 max-w-[560px] mx-auto [font-feature-settings:'ss01']"
+        >
+          Your career data is sensitive.
+        </motion.h2>
+        
+        <motion.p
+          {...(reduce ? {} : fadeInView(0.1))}
+          className="text-[15px] font-light text-[var(--lp-ink-2)] mb-12 leading-relaxed max-w-[600px] mx-auto"
+        >
+          We're committed to keeping it safe, transparent, and entirely yours. We never sell your personal data or share it with advertisers.
+        </motion.p>
+        
+        <div className="grid md:grid-cols-3 gap-6 mb-12 text-left">
+          <motion.div
+            {...(reduce ? {} : fadeInView(0.15))}
+            className="p-8 rounded-2xl bg-[var(--lp-bg)] border border-[var(--lp-hairline)] shadow-[var(--s-shadow-1)]"
+          >
+            <div className="w-10 h-10 rounded-xl bg-[var(--primary-subtle)] flex items-center justify-center mb-5">
+              <Lock size={18} className="text-[var(--primary)]" />
+            </div>
+            <h3 className="text-lg font-light text-[var(--lp-ink)] mb-2 tracking-tight">Encrypted End-to-End</h3>
+            <p className="text-[13px] font-light text-[var(--lp-ink-mute)] leading-relaxed m-0">
+              All data in transit uses TLS 1.2+. Resume files and account data are encrypted at rest. Passwords are never stored in plain text.
+            </p>
+          </motion.div>
+          
+          <motion.div
+            {...(reduce ? {} : fadeInView(0.2))}
+            className="p-8 rounded-2xl bg-[var(--lp-bg)] border border-[var(--lp-hairline)] shadow-[var(--s-shadow-1)]"
+          >
+            <div className="w-10 h-10 rounded-xl bg-[var(--primary-subtle)] flex items-center justify-center mb-5">
+              <Eye size={18} className="text-[var(--primary)]" />
+            </div>
+            <h3 className="text-lg font-light text-[var(--lp-ink)] mb-2 tracking-tight">No Selling, Ever</h3>
+            <p className="text-[13px] font-light text-[var(--lp-ink-mute)] leading-relaxed m-0">
+              Your resume and job history exist only to power your search. We never use your data to build behavioral profiles for external purposes.
+            </p>
+          </motion.div>
+          
+          <motion.div
+            {...(reduce ? {} : fadeInView(0.25))}
+            className="p-8 rounded-2xl bg-[var(--lp-bg)] border border-[var(--lp-hairline)] shadow-[var(--s-shadow-1)]"
+          >
+            <div className="w-10 h-10 rounded-xl bg-[var(--primary-subtle)] flex items-center justify-center mb-5">
+              <Shield size={18} className="text-[var(--primary)]" />
+            </div>
+            <h3 className="text-lg font-light text-[var(--lp-ink)] mb-2 tracking-tight">You're in Control</h3>
+            <p className="text-[13px] font-light text-[var(--lp-ink-mute)] leading-relaxed m-0">
+              Delete any resume, revoke access, or remove your account at any time. All personal data is purged within 14 days of account deletion.
+            </p>
+          </motion.div>
+        </div>
+
+        <motion.div {...(reduce ? {} : fadeInView(0.3))} className="inline-block">
+          <Link
+            to="/privacy"
+            className="inline-flex items-center gap-2 text-sm font-light text-[var(--primary)] hover:text-[var(--primary-hover)] transition-colors group no-underline"
+          >
+            Read the full Privacy Policy
+            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
 // ── Footer ────────────────────────────────────────────────────────────────────
 const Footer: React.FC = () => (
   <footer className="bg-[var(--lp-bg)] border-t border-[var(--lp-hairline)] py-10 px-6">
@@ -1220,6 +1309,7 @@ export const Landing: React.FC = () => (
     <About />
     <Founders />
     <Products />
+    <PrivacySection />
     <CTABand />
     <Footer />
   </div>
