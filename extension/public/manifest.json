@@ -24,7 +24,7 @@
   "side_panel": {
     "default_path": "index.html"
   },
-  "permissions": ["storage", "sidePanel"],
+  "permissions": ["sidePanel"],
   "host_permissions": [
     "https://drive.google.com/*",
     "https://*.googleusercontent.com/*"
