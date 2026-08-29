@@ -16,8 +16,6 @@ import {
   ExternalLink,
   Sparkles,
   Target,
-  Sparkles,
-  Target,
   Layers,
   Eye,
   Lock,
@@ -28,33 +26,25 @@ import {
   Briefcase,
 } from "lucide-react";
 
-// ── Brand logo mark (hex + upward-curving arrow) ──────────────────────────
+// ── Brand logo mark ───────────────────────────────────────────────────────
 const LogoMark: React.FC<{ size?: number }> = ({ size = 36 }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 100 100"
-    fill="none"
+    viewBox="0 0 1113 1321"
     width={size}
     height={size}
     aria-hidden="true"
   >
-    <polygon points="50,10 85,30 85,70 50,90 15,70 15,30" fill="#0A66C2" />
-    <line
-      x1="50"
-      y1="30"
-      x2="50"
-      y2="70"
-      stroke="white"
-      strokeWidth="8"
-      strokeLinecap="round"
-    />
-    <path
-      d="M 34 36 L 34 54 A 16 16 0 0 0 50 70 A 16 16 0 0 0 66 54 A 16 16 0 0 0 50 38 L 48 38"
-      stroke="white"
-      strokeWidth="8"
-      strokeLinecap="round"
-      fill="none"
-    />
+    <g transform="translate(0,1321) scale(0.1,-0.1)">
+      <path
+        d="M5405 13080 c-106 -17 -207 -58 -332 -133 -29 -18 -101 -60 -160 -95 -60 -34 -135 -80 -168 -101 -57 -37 -876 -528 -936 -562 -16 -9 -34 -21 -41 -27 -7 -5 -40 -24 -73 -42 -50 -27 -94 -54 -210 -128 -11 -6 -27 -15 -35 -19 -8 -3 -45 -26 -82 -50 -37 -24 -68 -43 -70 -43 -2 0 -258 -153 -568 -339 -311 -187 -785 -472 -1055 -634 -269 -162 -656 -394 -858 -516 -202 -121 -371 -221 -374 -221 -3 0 -32 -17 -63 -39 -170 -113 -254 -205 -332 -362 l-48 -97 0 -3096 c0 -2720 2 -3100 15 -3126 8 -16 22 -50 31 -77 46 -136 192 -292 375 -400 151 -90 248 -148 336 -201 48 -29 95 -57 103 -62 20 -12 702 -421 893 -536 81 -49 160 -97 175 -106 15 -10 36 -22 47 -28 11 -6 34 -19 50 -30 17 -11 39 -24 50 -30 11 -6 29 -16 40 -23 11 -7 38 -24 60 -37 23 -14 50 -30 60 -37 162 -97 653 -392 670 -403 13 -8 279 -168 590 -355 312 -187 577 -347 590 -355 13 -8 140 -84 282 -169 142 -85 288 -174 325 -197 37 -24 69 -44 72 -44 3 0 24 -12 48 -27 24 -16 52 -33 63 -40 11 -7 49 -30 85 -51 149 -91 290 -162 320 -162 12 0 44 -7 71 -16 40 -13 79 -16 198 -12 83 2 155 9 163 15 7 5 28 13 47 17 49 9 216 93 331 166 18 11 168 101 192 115 9 6 205 123 434 260 229 138 439 263 467 279 29 15 54 32 55 37 2 5 8 9 14 9 5 0 62 32 126 71 64 38 126 76 137 82 11 7 39 24 63 40 24 15 45 27 48 27 3 0 29 15 57 33 72 47 114 71 172 102 28 15 57 33 66 41 8 8 19 14 23 14 5 0 27 13 50 28 22 15 48 31 56 35 8 4 27 15 42 25 15 9 94 57 175 106 81 49 235 143 342 209 107 65 202 122 210 125 9 3 30 15 46 28 17 12 53 34 80 49 28 14 64 35 80 46 17 10 39 23 50 29 11 6 29 16 40 23 42 26 102 62 120 74 34 21 179 107 206 123 38 22 536 322 564 340 13 8 182 110 377 227 194 116 383 236 419 266 108 90 198 228 241 372 9 28 22 70 29 95 12 38 14 526 14 3015 l0 2970 -28 95 c-71 237 -189 384 -422 522 -193 114 -998 596 -1040 622 -28 17 -59 36 -70 43 -235 139 -1409 844 -1443 865 -15 10 -36 22 -47 28 -11 6 -33 19 -50 30 -16 11 -39 24 -50 30 -11 6 -33 19 -50 30 -16 10 -40 25 -52 32 -23 14 -68 40 -661 395 -206 123 -376 223 -378 223 -2 0 -101 59 -221 132 -551 332 -713 426 -773 447 -36 12 -73 27 -82 32 -24 12 -252 19 -313 9z"
+        fill="#3E7DB0"
+      />
+      <path
+        d="M5320 10741 c-14 -10 -232 -150 -485 -311 -253 -161 -463 -298 -467 -304 -10 -14 -9 -5238 1 -5315 7 -57 12 -68 47 -100 21 -20 264 -171 539 -336 488 -291 773 -464 1335 -805 151 -92 289 -175 307 -184 39 -19 99 -21 133 -2 42 23 1778 1080 1929 1174 128 81 114 -74 112 1252 -1 971 -3 1155 -15 1178 -18 34 -2021 1240 -2095 1261 -44 12 -52 11 -92 -7 -24 -11 -305 -177 -624 -370 l-580 -351 -3 1620 c-1 890 -5 1619 -10 1619 -4 0 -18 -9 -32 -19z m1370 -3625 c35 -23 581 -358 862 -528 155 -94 195 -128 215 -180 8 -24 12 -194 12 -612 1 -566 1 -581 -20 -622 -24 -50 -25 -51 -399 -279 -151 -92 -356 -217 -455 -278 -202 -124 -241 -142 -289 -129 -28 8 -189 104 -931 554 -126 77 -245 151 -264 165 -62 47 -61 40 -61 606 0 512 0 513 23 557 27 54 39 63 557 382 206 128 431 267 500 310 108 68 130 78 170 78 31 0 56 -7 80 -24z M3295 9513 c-165 -102 -385 -237 -490 -301 -104 -64 -193 -120 -197 -126 -4 -6 -8 -1135 -8 -2509 0 -2196 2 -2501 15 -2527 11 -22 147 -108 597 -378 321 -192 831 -499 1133 -682 303 -183 613 -371 690 -417 169 -103 172 -103 308 -16 163 105 759 474 773 480 8 3 14 8 14 12 0 7 -212 138 -640 396 -129 78 -525 319 -880 535 -355 216 -720 438 -812 494 -104 62 -171 109 -177 124 -8 16 -11 786 -11 2562 0 1397 -3 2540 -7 2539 -5 0 -143 -84 -308 -186z"
+        fill="#FFFFFF"
+      />
+    </g>
   </svg>
 );
 
@@ -187,7 +177,7 @@ const STATS = [
 // ── Founders data ──────────────────────────────────────────────────────────
 const FOUNDERS = [
   {
-    name: "Chetanya Saini",
+    name: "Mukul Juyal",
     role: "Co-Founder & CEO",
     bio: "Obsessed with the gap between talent and opportunity. Previously built ML pipelines at scale. Believes the job search is broken — and is fixing it one model at a time.",
     image: "/assets/founder1.jpg",
@@ -200,7 +190,7 @@ const FOUNDERS = [
     borderAccent: "border-blue-500/20",
   },
   {
-    name: "Co-Founder",
+    name: "Chetan Tiwari",
     role: "Co-Founder & CTO",
     bio: "Full-stack engineer with a design eye. Spent years watching engineers struggle with ATS black boxes. Now building the transparency layer that job seekers deserve.",
     image: "/assets/founder2.jpg",
@@ -238,12 +228,88 @@ const PILLARS = [
   },
 ];
 
-// ── Product features for extension card ───────────────────────────────────
-const EXTENSION_FEATURES = [
-  "Match your resume against any job in one click",
-  "Auto-extract requirements from any posting",
-  "Works on LinkedIn, Indeed, Greenhouse, Lever & more",
-  "Zero data stored — privacy-first architecture",
+// ── Products data ──────────────────────────────────────────────────────────
+const PRODUCTS = [
+  {
+    badge: "Chrome Extension",
+    badgeIcon: "external-link" as const,
+    tag: "Free",
+    title: "Resume Match Extension",
+    description:
+      "Install once. On any job page, press the button and get an instant AI-powered match score between your resume and that role — with a breakdown of every gap and strength.",
+    features: [
+      "Match your resume against any job in one click",
+      "Auto-extract requirements from any posting",
+      "Works on LinkedIn, Indeed, Greenhouse, Lever & more",
+      "Zero data stored — privacy-first architecture",
+    ],
+    cta: { label: "Add to Chrome — Free", id: "ext-install-cta" },
+    secondaryCta: { label: "View source on GitHub →", href: "#" },
+    // Multiple images for the in-card preview carousel
+    images: [
+      {
+        src: "/assets/extension1.jpg",
+        alt: "Resume Match Extension in action",
+      },
+      { src: "/assets/extension2.jpg", alt: "Gap analysis breakdown" },
+      { src: "/assets/extension3.jpg", alt: "Match score overlay" },
+      { src: "/assets/extension4.jpg", alt: "Match score overlay" },
+    ],
+    accentFrom: "rgba(37,99,235,0.12)",
+    accentGrid: "rgba(37,99,235,0.04)",
+    tagColor: "bg-blue-500",
+  },
+  {
+    badge: "Web App",
+    badgeIcon: "briefcase" as const,
+    tag: "Beta",
+    title: "AI Job Dashboard",
+    description:
+      "Your command center for the job search. Track applications, compare salary data, and get AI-generated next steps — all in one focused, distraction-free interface.",
+    features: [
+      "Kanban-style application tracker",
+      "Real-time salary benchmarks per role",
+      "AI-generated follow-up suggestions",
+      "Export to CSV or share with a mentor",
+    ],
+    cta: { label: "Try the Dashboard", id: "dashboard-cta" },
+    secondaryCta: { label: "See a demo →", href: "#" },
+    images: [
+      {
+        src: "/assets/dashboard-preview.png",
+        alt: "AI Job Dashboard overview",
+      },
+      { src: "/assets/dashboard-kanban.png", alt: "Kanban board view" },
+      { src: "/assets/dashboard-salary.png", alt: "Salary benchmarks" },
+    ],
+    accentFrom: "rgba(124,58,237,0.12)",
+    accentGrid: "rgba(124,58,237,0.04)",
+    tagColor: "bg-violet-500",
+  },
+  {
+    badge: "API",
+    badgeIcon: "git-branch" as const,
+    tag: "Coming soon",
+    title: "Match Score API",
+    description:
+      "Integrate resume-to-job matching into your own ATS, career portal, or HR tool. OpenAPI docs and a generous free tier included out of the box.",
+    features: [
+      "REST + streaming endpoints",
+      "Structured JSON gap/strength breakdown",
+      "Webhook support for async scoring",
+      "Free tier: 500 requests/month",
+    ],
+    cta: { label: "Join the waitlist", id: "api-waitlist-cta" },
+    secondaryCta: { label: "Read the docs →", href: "#" },
+    images: [
+      { src: "/assets/api-preview.png", alt: "Match Score API documentation" },
+      { src: "/assets/api-response.png", alt: "JSON response example" },
+      { src: "/assets/api-dashboard.png", alt: "API usage dashboard" },
+    ],
+    accentFrom: "rgba(16,185,129,0.12)",
+    accentGrid: "rgba(16,185,129,0.04)",
+    tagColor: "bg-emerald-500",
+  },
 ];
 
 // ── Nav ─────────────────────────────────────────────────────────────────────
@@ -262,15 +328,15 @@ const Nav: React.FC = () => {
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       className={`fixed top-0 left-0 right-0 z-50 h-[68px] flex items-center transition-all duration-250 ${
         scrolled
-          ? "bg-[color-mix(in_srgb,var(--lp-bg)_92%,transparent)] backdrop-blur-md border-b border-[var(--lp-hairline)]"
+          ? "bg-[color-mix(in_srgb,var(--lp-bg)_92%,transparent)] backdrop-blur-md border-b border-(--lp-hairline)"
           : "bg-transparent border-b border-transparent"
       }`}
     >
-      <div className="max-w-[1200px] mx-auto w-full px-6 flex items-center justify-between">
+      <div className="max-w-300 mx-auto w-full px-6 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 no-underline">
           <LogoMark size={36} />
-          <span className="text-base font-normal text-[var(--lp-ink)] tracking-tight">
-            <span style={{ color: "#0A66C2", fontWeight: 600 }}>Link</span>bay
+          <span className="text-3xl font-extrabold text-gray-500 tracking-tight">
+            <span style={{ color: "#0A66C2" }}>Link</span>Bay
           </span>
         </Link>
 
@@ -288,7 +354,7 @@ const Nav: React.FC = () => {
             <a
               key={id}
               href={`#${id}`}
-              className="text-sm font-light text-[var(--lp-ink-mute)] no-underline transition-colors duration-150 hover:text-[var(--lp-ink)]"
+              className="text-sm font-light text-(--lp-ink-mute) no-underline transition-colors duration-150 hover:text-(--lp-ink)"
             >
               {label}
             </a>
@@ -935,22 +1001,137 @@ const Founders: React.FC = () => {
   );
 };
 
-// ── Products ──────────────────────────────────────────────────────────────────
+// ── Products section ──────────────────────────────────────────────────────────
+const BADGE_ICONS: Record<string, React.ElementType> = {
+  "external-link": ExternalLink,
+  briefcase: Briefcase,
+  "git-branch": GitBranch,
+};
+
+const IMG_INTERVAL_MS = 3200;
+
+// Inner image carousel — one per product card, independent timer
+const ProductImageCarousel: React.FC<{
+  images: { src: string; alt: string }[];
+  accentGrid: string;
+  reduce: boolean | null;
+}> = ({ images, accentGrid, reduce }) => {
+  const [idx, setIdx] = React.useState(0);
+
+  React.useEffect(() => {
+    if (reduce || images.length < 2) return;
+    const t = setInterval(
+      () => setIdx((i) => (i + 1) % images.length),
+      IMG_INTERVAL_MS,
+    );
+    return () => clearInterval(t);
+  }, [images.length, reduce]);
+
+  return (
+    <div className="relative w-full h-full min-h-[260px] lg:min-h-0 overflow-hidden">
+      {images.map((img, i) => (
+        <motion.img
+          key={i}
+          src={img.src}
+          alt={img.alt}
+          initial={false}
+          animate={{ opacity: i === idx ? 1 : 0 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="absolute inset-0 w-full h-full object-top-left"
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).style.opacity = "0";
+          }}
+        />
+      ))}
+      {/* Dot strip */}
+      {images.length > 1 && (
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10">
+          {images.map((_, i) => (
+            <button
+              key={i}
+              aria-label={`Preview ${i + 1}`}
+              onClick={() => setIdx(i)}
+              className="p-0 border-0 cursor-pointer rounded-full transition-all duration-300"
+              style={{
+                width: i === idx ? 20 : 6,
+                height: 6,
+                background:
+                  i === idx
+                    ? "rgba(255,255,255,0.9)"
+                    : "rgba(255,255,255,0.35)",
+              }}
+            >
+              {i === idx && !reduce && (
+                <motion.span
+                  key={idx}
+                  className="block w-full h-full origin-left rounded-full"
+                  style={{ background: "rgba(255,255,255,0.4)" }}
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{
+                    duration: IMG_INTERVAL_MS / 1000,
+                    ease: "linear",
+                  }}
+                />
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+      {/* Subtle image-fade-in fallback bg */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(${accentGrid} 1px, transparent 1px),linear-gradient(90deg,${accentGrid} 1px,transparent 1px)`,
+          backgroundSize: "32px 32px",
+          opacity: 0.7,
+        }}
+      />
+    </div>
+  );
+};
+
 const Products: React.FC = () => {
   const reduce = useReducedMotion();
+
   return (
     <section
       id="products"
       className="bg-[var(--lp-canvas-soft)] py-32 px-6 relative overflow-hidden"
     >
+      {/* Ambient glow blobs — multiply blend makes them visible on light canvas */}
       <div
         aria-hidden="true"
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(37,99,235,0.04)_0%,transparent_70%)] pointer-events-none"
-      />
+        className="absolute inset-0 pointer-events-none"
+        style={{ mixBlendMode: "multiply" }}
+      >
+        <div
+          className="absolute -top-24 left-[10%] w-[700px] h-[700px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(37,99,235,0.18) 0%, transparent 65%)",
+          }}
+        />
+        <div
+          className="absolute bottom-[-80px] right-[8%] w-[600px] h-[600px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 65%)",
+          }}
+        />
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%)",
+          }}
+        />
+      </div>
 
       <div className="max-w-[1200px] mx-auto relative z-10">
         {/* Header */}
-        <div className="mb-16">
+        <div className="mb-20">
           <motion.div
             {...(reduce ? {} : fadeInView(0))}
             className="inline-flex items-center gap-1.5 py-1 px-3 bg-[var(--primary-subtle)] border border-[var(--primary-border)] rounded-full mb-6"
@@ -976,127 +1157,140 @@ const Products: React.FC = () => {
           </motion.p>
         </div>
 
-        {/* Extension card — full-width Stripe-style feature card */}
-        <motion.div
-          {...(reduce
-            ? {}
-            : {
-                initial: { opacity: 0, y: 36 },
-                whileInView: { opacity: 1, y: 0 },
-                viewport: { once: true, amount: 0.15 },
-                transition: { duration: 0.75, ease: [0.16, 1, 0.3, 1] },
-              })}
-          className="group"
-        >
-          {/* Outer bezel */}
-          <div className="p-[1.5px] rounded-[2rem] bg-gradient-to-br from-[var(--primary-border)] via-[var(--lp-hairline)] to-[var(--lp-hairline)] transition-all duration-500 group-hover:from-[rgba(37,99,235,0.4)]">
-            <div className="bg-[var(--lp-bg)] rounded-[calc(2rem-1.5px)] overflow-hidden shadow-[inset_0_1px_1px_rgba(255,255,255,0.04)]">
-              <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[480px]">
-                {/* Left — text content */}
-                <div className="flex flex-col justify-center px-10 py-14 md:px-14">
-                  {/* Extension badge */}
-                  <div className="inline-flex items-center gap-2 self-start mb-6 px-3 py-1.5 rounded-full bg-[var(--primary-subtle)] border border-[var(--primary-border)]">
-                    <ExternalLink
-                      size={13}
-                      className="text-[var(--primary)]"
-                      strokeWidth={1.5}
-                    />
-                    <span className="text-[11px] font-medium text-[var(--primary)] tracking-wide">
-                      Chrome Extension
-                    </span>
-                    <span className="text-[10px] font-medium text-[var(--primary-border)] bg-[var(--primary)] px-1.5 py-0.5 rounded-full">
-                      Free
-                    </span>
-                  </div>
-
-                  <h3 className="text-[clamp(22px,3vw,32px)] font-light text-[var(--lp-ink)] tracking-tight leading-[1.15] mb-4 [font-feature-settings:'ss01']">
-                    Resume Match Extension
-                  </h3>
-                  <p className="text-[15px] font-light text-[var(--lp-ink-2)] leading-[1.7] mb-8 max-w-[420px]">
-                    Install once. Then, on any job page, press the button and
-                    get an instant AI-powered match score between your resume
-                    and that role — with a breakdown of every gap and strength.
-                  </p>
-
-                  {/* Feature list */}
-                  <ul className="space-y-3 mb-10">
-                    {EXTENSION_FEATURES.map((feat) => (
-                      <li key={feat} className="flex items-start gap-2.5">
-                        <div className="w-4 h-4 rounded-full bg-[var(--primary-subtle)] border border-[var(--primary-border)] flex items-center justify-center shrink-0 mt-0.5">
-                          <div className="w-1.5 h-1.5 rounded-full bg-[var(--primary)]" />
+        {/* Product cards — staggered bento grid */}
+        <div className="flex flex-col gap-6">
+          {PRODUCTS.map((product, cardIdx) => {
+            const BadgeIcon = BADGE_ICONS[product.badgeIcon];
+            const isEven = cardIdx % 2 === 0;
+            return (
+              <motion.div
+                key={product.title}
+                {...(reduce
+                  ? {}
+                  : {
+                      initial: { opacity: 0, y: 48 },
+                      whileInView: { opacity: 1, y: 0 },
+                      viewport: { once: true, amount: 0.12 },
+                      transition: {
+                        duration: 0.8,
+                        delay: cardIdx * 0.12,
+                        ease: [0.16, 1, 0.3, 1],
+                      },
+                    })}
+                className="group"
+              >
+                {/* Double-bezel outer shell */}
+                <div
+                  className="p-[1.5px] rounded-[2rem] transition-all duration-700"
+                  style={{
+                    background: `linear-gradient(135deg, ${product.accentFrom}, var(--lp-hairline) 60%, var(--lp-hairline))`,
+                  }}
+                >
+                  {/* Inner core */}
+                  <div className="bg-[var(--lp-bg)] rounded-[calc(2rem-1.5px)] overflow-hidden shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] group-hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)] transition-shadow duration-500">
+                    <div
+                      className={`grid grid-cols-1 lg:grid-cols-2 min-h-[420px] ${
+                        isEven ? "" : "lg:[&>*:first-child]:order-2"
+                      }`}
+                    >
+                      {/* Text pane */}
+                      <div className="flex flex-col justify-center px-10 py-12 md:px-14">
+                        {/* Badge */}
+                        <div className="inline-flex items-center gap-2 self-start mb-5 px-3 py-1.5 rounded-full bg-[var(--primary-subtle)] border border-[var(--primary-border)]">
+                          <BadgeIcon
+                            size={12}
+                            className="text-[var(--primary)]"
+                            strokeWidth={1.5}
+                          />
+                          <span className="text-[11px] font-medium text-[var(--primary)] tracking-wide">
+                            {product.badge}
+                          </span>
+                          <span
+                            className={`text-[10px] font-medium text-white px-1.5 py-0.5 rounded-full ${product.tagColor}`}
+                          >
+                            {product.tag}
+                          </span>
                         </div>
-                        <span className="text-[13px] font-light text-[var(--lp-ink-2)] leading-snug">
-                          {feat}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
 
-                  {/* CTA cluster */}
-                  <div className="flex flex-wrap items-center gap-3">
-                    <motion.div
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                    >
-                      <a
-                        href="#"
-                        id="ext-install-cta"
-                        className="btn-primary text-sm"
+                        <h3 className="text-[clamp(22px,2.8vw,30px)] font-light text-[var(--lp-ink)] tracking-tight leading-[1.15] mb-3 [font-feature-settings:'ss01']">
+                          {product.title}
+                        </h3>
+                        <p className="text-[14px] font-light text-[var(--lp-ink-2)] leading-[1.75] mb-7 max-w-[400px]">
+                          {product.description}
+                        </p>
+
+                        {/* Feature list */}
+                        <ul className="space-y-2.5 mb-8">
+                          {product.features.map((feat) => (
+                            <li key={feat} className="flex items-start gap-2.5">
+                              <div className="w-[18px] h-[18px] rounded-full bg-[var(--primary-subtle)] border border-[var(--primary-border)] flex items-center justify-center shrink-0 mt-[1px]">
+                                <div className="w-1.5 h-1.5 rounded-full bg-[var(--primary)]" />
+                              </div>
+                              <span className="text-[13px] font-light text-[var(--lp-ink-2)] leading-snug">
+                                {feat}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+
+                        {/* CTA row */}
+                        <div className="flex flex-wrap items-center gap-3">
+                          <motion.div
+                            whileHover={{ scale: 1.03 }}
+                            whileTap={{ scale: 0.97 }}
+                          >
+                            <a
+                              href="#"
+                              id={product.cta.id}
+                              className="btn-primary text-sm"
+                            >
+                              <BadgeIcon size={13} />
+                              {product.cta.label}
+                            </a>
+                          </motion.div>
+                          <a
+                            href={product.secondaryCta.href}
+                            className="text-sm font-light text-[var(--lp-ink-mute)] no-underline hover:text-[var(--primary)] transition-colors duration-150"
+                          >
+                            {product.secondaryCta.label}
+                          </a>
+                        </div>
+                      </div>
+
+                      {/* Image pane — independent auto-carousel */}
+                      <div
+                        className={`relative bg-[var(--bg-surface)] overflow-hidden min-h-[280px] lg:min-h-0 ${
+                          isEven
+                            ? "lg:rounded-r-[calc(2rem-1.5px)]"
+                            : "lg:rounded-l-[calc(2rem-1.5px)]"
+                        }`}
                       >
-                        <ExternalLink size={14} />
-                        Add to Chrome — Free
-                      </a>
-                    </motion.div>
-                    <a
-                      href="#"
-                      className="text-sm font-light text-[var(--lp-ink-mute)] no-underline hover:text-[var(--primary)] transition-colors duration-150"
-                    >
-                      View source on GitHub →
-                    </a>
+                        <ProductImageCarousel
+                          images={product.images}
+                          accentGrid={product.accentGrid}
+                          reduce={reduce}
+                        />
+                        {/* Bottom-edge fade into card bg */}
+                        <div
+                          aria-hidden="true"
+                          className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none"
+                          style={{
+                            background: `linear-gradient(to top, var(--lp-bg), transparent)`,
+                          }}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
-
-                {/* Right — image showcase */}
-                <div className="relative bg-[var(--bg-surface)] lg:rounded-r-[calc(2rem-1.5px)] overflow-hidden min-h-[320px] lg:min-h-0">
-                  {/* Primary screenshot */}
-                  <img
-                    src="/assets/extension-preview.png"
-                    alt="Resume Match Extension in action"
-                    className="absolute inset-0 w-full h-full object-cover object-left-top transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[1.03]"
-                    onError={(e) => {
-                      const target = e.currentTarget;
-                      target.style.display = "none";
-                      const parent = target.parentElement;
-                      if (parent && !parent.querySelector(".ext-fallback")) {
-                        const fb = document.createElement("div");
-                        fb.className =
-                          "ext-fallback absolute inset-0 flex flex-col items-center justify-center gap-4";
-                        fb.innerHTML = `
-                          <div style="width:64px;height:64px;border-radius:16px;background:var(--primary-subtle);border:1px solid var(--primary-border);display:flex;align-items:center;justify-content:center;">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="21.17" y1="8" x2="12" y2="8"/><line x1="3.95" y1="6.06" x2="8.54" y2="14"/><line x1="10.88" y1="21.94" x2="15.46" y2="14"/></svg>
-                          </div>
-                          <p style="font-size:13px;font-weight:300;color:var(--text-muted);text-align:center;max-width:200px;line-height:1.5;">Drop extension-preview.png in public/assets/ to show a screenshot here</p>
-                        `;
-                        parent.appendChild(fb);
-                      }
-                    }}
-                  />
-
-                  {/* Decorative grid overlay */}
-                  <div
-                    aria-hidden="true"
-                    className="absolute inset-0 bg-[linear-gradient(rgba(37,99,235,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(37,99,235,0.03)_1px,transparent_1px)] bg-[size:32px_32px] opacity-60 pointer-events-none"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
+              </motion.div>
+            );
+          })}
+        </div>
 
         {/* "More coming" teaser */}
         <motion.div
           {...(reduce ? {} : fadeInView(0.05))}
-          className="mt-8 text-center"
+          className="mt-10 text-center"
         >
           <p className="text-sm font-light text-[var(--lp-ink-mute)]">
             More products in development —{" "}
@@ -1173,7 +1367,7 @@ const CTABand: React.FC = () => {
           </motion.div>
           <Link
             to="/login"
-            className="inline-flex items-center gap-1.5 text-base font-normal text-white/75 bg-white/10 border border-white/15 rounded-full py-3 px-7 no-underline transition-colors duration-150 hover:bg-white/15"
+            className="inline-flex items-center text-base font-normal text-white/75 bg-white/10 border border-white/15 rounded-full px-4 no-underline transition-colors duration-150 hover:bg-white/15"
           >
             Sign in
           </Link>
@@ -1198,21 +1392,22 @@ const PrivacySection: React.FC = () => {
             Privacy First
           </span>
         </motion.div>
-        
+
         <motion.h2
           {...(reduce ? {} : fadeInView(0.05))}
           className="text-[clamp(28px,4vw,42px)] font-light text-[var(--lp-ink)] tracking-tight leading-[1.1] mb-5 max-w-[560px] mx-auto [font-feature-settings:'ss01']"
         >
           Your career data is sensitive.
         </motion.h2>
-        
+
         <motion.p
           {...(reduce ? {} : fadeInView(0.1))}
           className="text-[15px] font-light text-[var(--lp-ink-2)] mb-12 leading-relaxed max-w-[600px] mx-auto"
         >
-          We're committed to keeping it safe, transparent, and entirely yours. We never sell your personal data or share it with advertisers.
+          We're committed to keeping it safe, transparent, and entirely yours.
+          We never sell your personal data or share it with advertisers.
         </motion.p>
-        
+
         <div className="grid md:grid-cols-3 gap-6 mb-12 text-left">
           <motion.div
             {...(reduce ? {} : fadeInView(0.15))}
@@ -1221,12 +1416,15 @@ const PrivacySection: React.FC = () => {
             <div className="w-10 h-10 rounded-xl bg-[var(--primary-subtle)] flex items-center justify-center mb-5">
               <Lock size={18} className="text-[var(--primary)]" />
             </div>
-            <h3 className="text-lg font-light text-[var(--lp-ink)] mb-2 tracking-tight">Encrypted End-to-End</h3>
+            <h3 className="text-lg font-light text-[var(--lp-ink)] mb-2 tracking-tight">
+              Encrypted End-to-End
+            </h3>
             <p className="text-[13px] font-light text-[var(--lp-ink-mute)] leading-relaxed m-0">
-              All data in transit uses TLS 1.2+. Resume files and account data are encrypted at rest. Passwords are never stored in plain text.
+              All data in transit uses TLS 1.2+. Resume files and account data
+              are encrypted at rest. Passwords are never stored in plain text.
             </p>
           </motion.div>
-          
+
           <motion.div
             {...(reduce ? {} : fadeInView(0.2))}
             className="p-8 rounded-2xl bg-[var(--lp-bg)] border border-[var(--lp-hairline)] shadow-[var(--s-shadow-1)]"
@@ -1234,12 +1432,16 @@ const PrivacySection: React.FC = () => {
             <div className="w-10 h-10 rounded-xl bg-[var(--primary-subtle)] flex items-center justify-center mb-5">
               <Eye size={18} className="text-[var(--primary)]" />
             </div>
-            <h3 className="text-lg font-light text-[var(--lp-ink)] mb-2 tracking-tight">No Selling, Ever</h3>
+            <h3 className="text-lg font-light text-[var(--lp-ink)] mb-2 tracking-tight">
+              No Selling, Ever
+            </h3>
             <p className="text-[13px] font-light text-[var(--lp-ink-mute)] leading-relaxed m-0">
-              Your resume and job history exist only to power your search. We never use your data to build behavioral profiles for external purposes.
+              Your resume and job history exist only to power your search. We
+              never use your data to build behavioral profiles for external
+              purposes.
             </p>
           </motion.div>
-          
+
           <motion.div
             {...(reduce ? {} : fadeInView(0.25))}
             className="p-8 rounded-2xl bg-[var(--lp-bg)] border border-[var(--lp-hairline)] shadow-[var(--s-shadow-1)]"
@@ -1247,20 +1449,30 @@ const PrivacySection: React.FC = () => {
             <div className="w-10 h-10 rounded-xl bg-[var(--primary-subtle)] flex items-center justify-center mb-5">
               <Shield size={18} className="text-[var(--primary)]" />
             </div>
-            <h3 className="text-lg font-light text-[var(--lp-ink)] mb-2 tracking-tight">You're in Control</h3>
+            <h3 className="text-lg font-light text-[var(--lp-ink)] mb-2 tracking-tight">
+              You're in Control
+            </h3>
             <p className="text-[13px] font-light text-[var(--lp-ink-mute)] leading-relaxed m-0">
-              Delete any resume, revoke access, or remove your account at any time. All personal data is purged within 14 days of account deletion.
+              Delete any resume, revoke access, or remove your account at any
+              time. All personal data is purged within 14 days of account
+              deletion.
             </p>
           </motion.div>
         </div>
 
-        <motion.div {...(reduce ? {} : fadeInView(0.3))} className="inline-block">
+        <motion.div
+          {...(reduce ? {} : fadeInView(0.3))}
+          className="inline-block"
+        >
           <Link
             to="/privacy"
             className="inline-flex items-center gap-2 text-sm font-light text-[var(--primary)] hover:text-[var(--primary-hover)] transition-colors group no-underline"
           >
             Read the full Privacy Policy
-            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+            <ArrowRight
+              size={14}
+              className="group-hover:translate-x-1 transition-transform"
+            />
           </Link>
         </motion.div>
       </div>
