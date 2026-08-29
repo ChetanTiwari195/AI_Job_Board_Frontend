@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion, AnimatePresence } from "motion/react";
 import {
   ArrowRight,
   Search,
@@ -384,28 +384,94 @@ const Nav: React.FC = () => {
   );
 };
 
+// ── FlipTicker — perpetual-calendar page-flip ─────────────────────────────
+const FLIP_PHRASES = [
+  "under one roof.",
+  "your way forward.",
+  "smarter, together.",
+  "finally, connected.",
+  "built for you.",
+];
+
+const FlipTicker: React.FC = () => {
+  const reduce = useReducedMotion();
+  const [idx, setIdx] = React.useState(0);
+
+  React.useEffect(() => {
+    const t = setInterval(
+      () => setIdx((i) => (i + 1) % FLIP_PHRASES.length),
+      2400,
+    );
+    return () => clearInterval(t);
+  }, []);
+
+  if (reduce) {
+    return <span className="text-(--primary)">{FLIP_PHRASES[idx]}</span>;
+  }
+
+  return (
+    <span className="relative inline-flex items-center text-(--primary) align-bottom overflow-hidden py-2 -my-2">
+      {/* Invisible longest phrase to hold layout width */}
+      <span className="invisible select-none" aria-hidden="true">
+        {FLIP_PHRASES.reduce((a, b) => (a.length >= b.length ? a : b))}
+      </span>
+
+      <AnimatePresence mode="wait">
+        <motion.span
+          key={idx}
+          className="absolute inset-0 flex items-center justify-start whitespace-nowrap"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -20, opacity: 0 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        >
+          {FLIP_PHRASES[idx]}
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  );
+};
+
 // ── Hero ─────────────────────────────────────────────────────────────────────
 const Hero: React.FC = () => {
   const reduce = useReducedMotion();
   return (
     <section
       id="hero"
-      className="min-h-[100dvh] flex flex-col items-center justify-center relative overflow-hidden pt-[68px] bg-[var(--lp-bg)]"
+      className="min-h-dvh flex flex-col items-center justify-center relative overflow-hidden pt-17 bg-(--lp-bg)"
     >
       {/* Gradient mesh */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 z-0 bg-[var(--lp-hero-bg)]"
+        className="absolute inset-0 z-0 bg-(--lp-hero-bg)"
+      />
+      {/* Ambient hue glow (top right) */}
+      <div
+        aria-hidden="true"
+        className="absolute -top-32 -right-32 w-225 h-225 z-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(37,99,235,0.20) 0%, transparent 65%)",
+        }}
+      />
+      {/* Ambient hue glow (bottom left) */}
+      <div
+        aria-hidden="true"
+        className="absolute -bottom-32 -left-32 w-225 h-225 z-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(102, 114, 179,0.12) 0%, transparent 45%)",
+        }}
       />
       <div
         aria-hidden="true"
-        className="absolute inset-0 z-10 bg-[linear-gradient(rgba(83,58,253,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(83,58,253,0.04)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_0%,black_0%,transparent_100%)]"
+        className="absolute inset-0 z-10 bg-[linear-gradient(rgba(83,58,253,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(83,58,253,0.04)_1px,transparent_1px)] bg-size-[64px_64px] mask-[radial-gradient(ellipse_80%_80%_at_50%_0%,black_0%,transparent_100%)]"
       />
 
-      <div className="max-w-[1200px] mx-auto px-6 w-full relative z-20 text-center">
+      <div className="max-w-300 mx-auto px-6 w-full relative z-20 text-center">
         <motion.div
           {...(reduce ? {} : fadeUp(0.05))}
-          className="inline-flex items-center gap-1.5 py-1 px-3 bg-[var(--s-primary-sub,var(--primary-border))] rounded-full mb-8"
+          className="inline-flex items-center gap-1.5 py-1 px-3 bg-(--s-primary-sub,var(--primary-border)) rounded-full mb-8"
         >
           <Globe size={11} color="#4434d4" />
           <span className="text-[10px] font-normal text-[#4434d4] tracking-wide uppercase">
@@ -417,10 +483,11 @@ const Hero: React.FC = () => {
           {...(reduce ? {} : fadeUp(0.1))}
           className="text-[clamp(36px,6vw,56px)] font-light leading-[1.03] tracking-[-1.4px] text-[var(--lp-ink)] mb-6 max-w-[800px] mx-auto [font-feature-settings:'ss01']"
         >
-          Job search, networking,
+          Job search, networking
           <br />
-          and reviews —{" "}
-          <span className="text-[var(--primary)]">under one roof.</span>
+          <span className="whitespace-nowrap">
+            and reviews — <FlipTicker />
+          </span>
         </motion.h1>
 
         <motion.p
@@ -448,7 +515,7 @@ const Hero: React.FC = () => {
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
             <a
               href="#features"
-              className="btn-secondary text-base py-3 px-7 text-[var(--primary)] border-[var(--primary)]"
+              className="btn-secondary text-base py-3 px-7 text-(--primary) border-[var(--primary)]"
             >
               See features
             </a>
@@ -535,10 +602,10 @@ const Features: React.FC = () => {
               key={f.title}
               variants={staggerChild}
               whileHover={reduce ? {} : { y: -4 }}
-              className={`border border-[var(--lp-hairline)] rounded-xl p-8 shadow-[var(--s-shadow-1)] transition-all duration-200 ${i % 2 === 0 ? "bg-[var(--lp-bg)]" : "bg-[var(--lp-canvas-cream)]"}`}
+              className={`border border-[var(--lp-hairline)] rounded-xl p-8 shadow-[var(--s-shadow-1)] transition-all duration-200 ${i % 2 === 0 ? "bg-(--lp-bg)" : "bg-[var(--lp-canvas-cream)]"}`}
             >
               <div className="w-10 h-10 rounded-xl bg-blue-600/10 flex items-center justify-center mb-5">
-                <f.icon size={20} className="text-[var(--primary)]" />
+                <f.icon size={20} className="text-(--primary)" />
               </div>
               <h3 className="text-lg font-light text-[var(--lp-ink)] tracking-tight mb-2 [font-feature-settings:'ss01']">
                 {f.title}
@@ -627,7 +694,7 @@ const ValueProp: React.FC = () => {
 const HowItWorks: React.FC = () => {
   const reduce = useReducedMotion();
   return (
-    <section id="how-it-works" className="bg-[var(--lp-bg)] py-24 px-6">
+    <section id="how-it-works" className="bg-(--lp-bg) py-24 px-6">
       <div className="max-w-[1200px] mx-auto">
         <div className="text-center mb-16">
           <motion.h2
@@ -709,7 +776,7 @@ const About: React.FC = () => {
             {...(reduce ? {} : fadeInView(0))}
             className="inline-flex items-center gap-1.5 py-1 px-3 bg-[var(--primary-subtle)] border border-[var(--primary-border)] rounded-full mb-6"
           >
-            <span className="text-[10px] font-medium text-[var(--primary)] tracking-widest uppercase">
+            <span className="text-[10px] font-medium text-(--primary) tracking-widest uppercase">
               Our Vision
             </span>
           </motion.div>
@@ -719,7 +786,7 @@ const About: React.FC = () => {
           >
             The job market is broken.
             <br />
-            <span className="text-[var(--primary)]">We're rebuilding it.</span>
+            <span className="text-(--primary)">We're rebuilding it.</span>
           </motion.h2>
           <motion.p
             {...(reduce ? {} : fadeInView(0.1))}
@@ -746,14 +813,14 @@ const About: React.FC = () => {
               key={p.title}
               variants={staggerChild}
               whileHover={reduce ? {} : { y: -3 }}
-              className="group relative bg-[var(--lp-bg)] border border-[var(--lp-hairline)] rounded-2xl p-8 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-[var(--primary-border)] hover:shadow-[0_8px_32px_rgba(37,99,235,0.08)]"
+              className="group relative bg-(--lp-bg) border border-[var(--lp-hairline)] rounded-2xl p-8 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-[var(--primary-border)] hover:shadow-[0_8px_32px_rgba(37,99,235,0.08)]"
             >
               {/* Inner accent glow on hover */}
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               <div className="w-11 h-11 rounded-xl bg-[var(--primary-subtle)] border border-[var(--primary-border)] flex items-center justify-center mb-5 relative z-10">
                 <p.icon
                   size={20}
-                  className="text-[var(--primary)]"
+                  className="text-(--primary)"
                   strokeWidth={1.5}
                 />
               </div>
@@ -774,14 +841,14 @@ const About: React.FC = () => {
         >
           {/* Outer bezel shell */}
           <div className="p-[1px] rounded-2xl bg-gradient-to-br from-[var(--primary-border)] via-[var(--lp-hairline)] to-[var(--lp-hairline)]">
-            <div className="bg-[var(--lp-bg)] rounded-[calc(1rem-1px)] px-10 py-12 md:px-16 md:py-14">
+            <div className="bg-(--lp-bg) rounded-[calc(1rem-1px)] px-10 py-12 md:px-16 md:py-14">
               <div className="max-w-[720px]">
                 <p className="text-[clamp(18px,2.5vw,26px)] font-light text-[var(--lp-ink)] leading-[1.55] tracking-tight [font-feature-settings:'ss01'] mb-8">
                   "We're not building another job board. We're building the
                   career intelligence layer that every professional deserves —
                   where your next opportunity finds{" "}
-                  <em className="not-italic text-[var(--primary)]">you</em>,
-                  informed and ready."
+                  <em className="not-italic text-(--primary)">you</em>, informed
+                  and ready."
                 </p>
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-[1px] bg-[var(--lp-hairline)]" />
@@ -819,13 +886,13 @@ const About: React.FC = () => {
             ].map((item) => (
               <div
                 key={item.title}
-                className="bg-[var(--lp-bg)] border border-[var(--lp-hairline)] rounded-xl p-6"
+                className="bg-(--lp-bg) border border-[var(--lp-hairline)] rounded-xl p-6"
               >
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <h4 className="text-[15px] font-normal text-[var(--lp-ink)] tracking-tight [font-feature-settings:'ss01']">
                     {item.title}
                   </h4>
-                  <span className="shrink-0 text-[10px] font-medium text-[var(--primary)] bg-[var(--primary-subtle)] border border-[var(--primary-border)] px-2 py-0.5 rounded-full uppercase tracking-wider">
+                  <span className="shrink-0 text-[10px] font-medium text-(--primary) bg-[var(--primary-subtle)] border border-[var(--primary-border)] px-2 py-0.5 rounded-full uppercase tracking-wider">
                     {item.soon ? "Soon" : "2026"}
                   </span>
                 </div>
@@ -847,7 +914,7 @@ const Founders: React.FC = () => {
   return (
     <section
       id="founders"
-      className="bg-[var(--lp-bg)] py-32 px-6 relative overflow-hidden"
+      className="bg-(--lp-bg) py-32 px-6 relative overflow-hidden"
     >
       {/* Background gradient mesh */}
       <div
@@ -862,7 +929,7 @@ const Founders: React.FC = () => {
             {...(reduce ? {} : fadeInView(0))}
             className="inline-flex items-center gap-1.5 py-1 px-3 bg-[var(--primary-subtle)] border border-[var(--primary-border)] rounded-full mb-6"
           >
-            <span className="text-[10px] font-medium text-[var(--primary)] tracking-widest uppercase">
+            <span className="text-[10px] font-medium text-(--primary) tracking-widest uppercase">
               The Team
             </span>
           </motion.div>
@@ -906,7 +973,7 @@ const Founders: React.FC = () => {
                 className={`p-[1.5px] rounded-[1.75rem] bg-gradient-to-b from-[var(--lp-hairline)] to-transparent transition-all duration-500 group-hover:from-[var(--primary-border)]`}
               >
                 {/* Inner core */}
-                <div className="bg-[var(--lp-bg)] rounded-[calc(1.75rem-1.5px)] overflow-hidden shadow-[inset_0_1px_1px_rgba(255,255,255,0.06)]">
+                <div className="bg-(--lp-bg) rounded-[calc(1.75rem-1.5px)] overflow-hidden shadow-[inset_0_1px_1px_rgba(255,255,255,0.06)]">
                   {/* Image area — full bleed */}
                   <div className="relative h-72 overflow-hidden bg-[var(--bg-surface)]">
                     <img
@@ -937,7 +1004,7 @@ const Founders: React.FC = () => {
                       <h3 className="text-[20px] font-normal text-[var(--lp-ink)] tracking-tight [font-feature-settings:'ss01']">
                         {founder.name}
                       </h3>
-                      <p className="text-[13px] font-medium text-[var(--primary)] tracking-wide mt-0.5">
+                      <p className="text-[13px] font-medium text-(--primary) tracking-wide mt-0.5">
                         {founder.role}
                       </p>
                     </div>
@@ -969,7 +1036,7 @@ const Founders: React.FC = () => {
                           key={label}
                           href={href}
                           aria-label={label}
-                          className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--lp-ink-mute)] border border-[var(--lp-hairline)] bg-[var(--bg-surface)] transition-all duration-200 hover:text-[var(--primary)] hover:border-[var(--primary-border)] hover:bg-[var(--primary-subtle)]"
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--lp-ink-mute)] border border-[var(--lp-hairline)] bg-[var(--bg-surface)] transition-all duration-200 hover:text-(--primary) hover:border-[var(--primary-border)] hover:bg-[var(--primary-subtle)]"
                         >
                           <Icon size={14} strokeWidth={1.5} />
                         </a>
@@ -990,7 +1057,7 @@ const Founders: React.FC = () => {
           We're a small, focused team. If you share the obsession,{" "}
           <a
             href="mailto:hello@aijobboard.io"
-            className="text-[var(--primary)] no-underline hover:underline"
+            className="text-(--primary) no-underline hover:underline"
           >
             reach out
           </a>
@@ -1100,12 +1167,8 @@ const Products: React.FC = () => {
       id="products"
       className="bg-[var(--lp-canvas-soft)] py-32 px-6 relative overflow-hidden"
     >
-      {/* Ambient glow blobs — multiply blend makes them visible on light canvas */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 pointer-events-none"
-        style={{ mixBlendMode: "multiply" }}
-      >
+      {/* Ambient glow blobs — standard alpha blending for consistent visibility */}
+      <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
         <div
           className="absolute -top-24 left-[10%] w-[700px] h-[700px] rounded-full"
           style={{
@@ -1136,7 +1199,7 @@ const Products: React.FC = () => {
             {...(reduce ? {} : fadeInView(0))}
             className="inline-flex items-center gap-1.5 py-1 px-3 bg-[var(--primary-subtle)] border border-[var(--primary-border)] rounded-full mb-6"
           >
-            <span className="text-[10px] font-medium text-[var(--primary)] tracking-widest uppercase">
+            <span className="text-[10px] font-medium text-(--primary) tracking-widest uppercase">
               Products
             </span>
           </motion.div>
@@ -1187,7 +1250,7 @@ const Products: React.FC = () => {
                   }}
                 >
                   {/* Inner core */}
-                  <div className="bg-[var(--lp-bg)] rounded-[calc(2rem-1.5px)] overflow-hidden shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] group-hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)] transition-shadow duration-500">
+                  <div className="bg-(--lp-bg) rounded-[calc(2rem-1.5px)] overflow-hidden shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] group-hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)] transition-shadow duration-500">
                     <div
                       className={`grid grid-cols-1 lg:grid-cols-2 min-h-[420px] ${
                         isEven ? "" : "lg:[&>*:first-child]:order-2"
@@ -1199,10 +1262,10 @@ const Products: React.FC = () => {
                         <div className="inline-flex items-center gap-2 self-start mb-5 px-3 py-1.5 rounded-full bg-[var(--primary-subtle)] border border-[var(--primary-border)]">
                           <BadgeIcon
                             size={12}
-                            className="text-[var(--primary)]"
+                            className="text-(--primary)"
                             strokeWidth={1.5}
                           />
-                          <span className="text-[11px] font-medium text-[var(--primary)] tracking-wide">
+                          <span className="text-[11px] font-medium text-(--primary) tracking-wide">
                             {product.badge}
                           </span>
                           <span
@@ -1250,7 +1313,7 @@ const Products: React.FC = () => {
                           </motion.div>
                           <a
                             href={product.secondaryCta.href}
-                            className="text-sm font-light text-[var(--lp-ink-mute)] no-underline hover:text-[var(--primary)] transition-colors duration-150"
+                            className="text-sm font-light text-[var(--lp-ink-mute)] no-underline hover:text-(--primary) transition-colors duration-150"
                           >
                             {product.secondaryCta.label}
                           </a>
@@ -1296,7 +1359,7 @@ const Products: React.FC = () => {
             More products in development —{" "}
             <a
               href="#"
-              className="text-[var(--primary)] no-underline hover:underline"
+              className="text-(--primary) no-underline hover:underline"
             >
               join the waitlist
             </a>
@@ -1387,8 +1450,8 @@ const PrivacySection: React.FC = () => {
           {...(reduce ? {} : fadeInView(0))}
           className="inline-flex items-center gap-1.5 py-1 px-3 bg-[var(--primary-subtle)] border border-[var(--primary-border)] rounded-full mb-6"
         >
-          <Shield size={11} className="text-[var(--primary)]" />
-          <span className="text-[10px] font-medium text-[var(--primary)] tracking-widest uppercase">
+          <Shield size={11} className="text-(--primary)" />
+          <span className="text-[10px] font-medium text-(--primary) tracking-widest uppercase">
             Privacy First
           </span>
         </motion.div>
@@ -1411,10 +1474,10 @@ const PrivacySection: React.FC = () => {
         <div className="grid md:grid-cols-3 gap-6 mb-12 text-left">
           <motion.div
             {...(reduce ? {} : fadeInView(0.15))}
-            className="p-8 rounded-2xl bg-[var(--lp-bg)] border border-[var(--lp-hairline)] shadow-[var(--s-shadow-1)]"
+            className="p-8 rounded-2xl bg-(--lp-bg) border border-[var(--lp-hairline)] shadow-[var(--s-shadow-1)]"
           >
             <div className="w-10 h-10 rounded-xl bg-[var(--primary-subtle)] flex items-center justify-center mb-5">
-              <Lock size={18} className="text-[var(--primary)]" />
+              <Lock size={18} className="text-(--primary)" />
             </div>
             <h3 className="text-lg font-light text-[var(--lp-ink)] mb-2 tracking-tight">
               Encrypted End-to-End
@@ -1427,10 +1490,10 @@ const PrivacySection: React.FC = () => {
 
           <motion.div
             {...(reduce ? {} : fadeInView(0.2))}
-            className="p-8 rounded-2xl bg-[var(--lp-bg)] border border-[var(--lp-hairline)] shadow-[var(--s-shadow-1)]"
+            className="p-8 rounded-2xl bg-(--lp-bg) border border-[var(--lp-hairline)] shadow-[var(--s-shadow-1)]"
           >
             <div className="w-10 h-10 rounded-xl bg-[var(--primary-subtle)] flex items-center justify-center mb-5">
-              <Eye size={18} className="text-[var(--primary)]" />
+              <Eye size={18} className="text-(--primary)" />
             </div>
             <h3 className="text-lg font-light text-[var(--lp-ink)] mb-2 tracking-tight">
               No Selling, Ever
@@ -1444,10 +1507,10 @@ const PrivacySection: React.FC = () => {
 
           <motion.div
             {...(reduce ? {} : fadeInView(0.25))}
-            className="p-8 rounded-2xl bg-[var(--lp-bg)] border border-[var(--lp-hairline)] shadow-[var(--s-shadow-1)]"
+            className="p-8 rounded-2xl bg-(--lp-bg) border border-[var(--lp-hairline)] shadow-[var(--s-shadow-1)]"
           >
             <div className="w-10 h-10 rounded-xl bg-[var(--primary-subtle)] flex items-center justify-center mb-5">
-              <Shield size={18} className="text-[var(--primary)]" />
+              <Shield size={18} className="text-(--primary)" />
             </div>
             <h3 className="text-lg font-light text-[var(--lp-ink)] mb-2 tracking-tight">
               You're in Control
@@ -1466,7 +1529,7 @@ const PrivacySection: React.FC = () => {
         >
           <Link
             to="/privacy"
-            className="inline-flex items-center gap-2 text-sm font-light text-[var(--primary)] hover:text-[var(--primary-hover)] transition-colors group no-underline"
+            className="inline-flex items-center gap-2 text-sm font-light text-(--primary) hover:text-[var(--primary-hover)] transition-colors group no-underline"
           >
             Read the full Privacy Policy
             <ArrowRight
@@ -1482,14 +1545,12 @@ const PrivacySection: React.FC = () => {
 
 // ── Footer ────────────────────────────────────────────────────────────────────
 const Footer: React.FC = () => (
-  <footer className="bg-[var(--lp-bg)] border-t border-[var(--lp-hairline)] py-10 px-6">
+  <footer className="bg-(--lp-bg) border-t border-[var(--lp-hairline)] py-10 px-6">
     <div className="max-w-[1200px] mx-auto flex items-center justify-between flex-wrap gap-4">
       <div className="flex items-center gap-2">
-        <div className="w-7 h-7 rounded-lg bg-[var(--primary)] flex items-center justify-center">
-          <Briefcase size={14} color="white" />
-        </div>
-        <span className="text-[13px] font-light text-[var(--lp-ink-mute)]">
-          Linkbay
+        <LogoMark size={24} />
+        <span className="text-lg font-extrabold text-gray-500 tracking-tight">
+          <span style={{ color: "#0A66C2" }}>Link</span>Bay
         </span>
       </div>
       <p className="text-xs text-[var(--lp-ink-mute)]">
@@ -1500,7 +1561,7 @@ const Footer: React.FC = () => (
           <a
             key={l}
             href="#"
-            className="text-xs font-light text-[var(--lp-ink-mute)] no-underline transition-colors duration-150 hover:text-[var(--primary)]"
+            className="text-xs font-light text-[var(--lp-ink-mute)] no-underline transition-colors duration-150 hover:text-(--primary)"
           >
             {l}
           </a>
