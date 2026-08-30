@@ -485,7 +485,7 @@ const Hero: React.FC = () => {
         >
           Job search, networking
           <br />
-          <span className="whitespace-nowrap">
+          <span className="whitespace-normal md:whitespace-nowrap">
             and reviews — <FlipTicker />
           </span>
         </motion.h1>
